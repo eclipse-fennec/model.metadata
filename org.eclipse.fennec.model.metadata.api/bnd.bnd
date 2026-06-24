@@ -1,6 +1,6 @@
 Bundle-Name: Fennec Model Metadata
 Bundle-Description: Services to hold model metadata
-Bundle-Version: 1.0.0
+
 src=${^src},src-gen,src-gen-api
 
 -library: \
