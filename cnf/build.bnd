@@ -1,0 +1,4 @@
+-fixupmessages: \
+	"jpms.jarname calculated";is:=ignore,\
+	"No translation";is:=ignore,\
+	"[Include Over";is:=ignore
