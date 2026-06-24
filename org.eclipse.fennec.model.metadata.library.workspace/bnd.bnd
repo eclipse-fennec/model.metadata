@@ -1,0 +1,15 @@
+-resourceonly: true
+-include: ${.}/buildpath.bnd
+mavendeps: ${sjoin;\n; ${template;-maven-dependencies;${@}}}
+
+-includeresource: {resources}
+
+Provide-Capability: \
+	${fennec-base}
+
+fennec-base:\
+    bnd.library;\
+        bnd.library     = fennecEMFMetadata; \
+        path            = template
+Bundle-Name: Fennec EMF Model Metadata Bnd Workspace Library
+Bundle-Description: Bnd workspace library to include all Model Metadata dependencies
