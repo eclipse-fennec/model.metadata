@@ -10,6 +10,7 @@
 // Internal dev docs (e.g. extraction-requirements.md) are deliberately NOT listed
 // here and therefore stay GitHub-only, matching the other Fennec projects.
 export const GUIDES = [
+  { file: 'model-metadata-purpose.md', slug: 'overview', title: 'Overview' },
   { file: 'model-metadata-architecture.md', slug: 'architecture', title: 'Architecture' },
 ];
 

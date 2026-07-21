@@ -10,6 +10,9 @@ hero:
     alt: Eclipse Fennec logo
   actions:
     - theme: brand
+      text: Overview
+      link: /guides/overview
+    - theme: alt
       text: Architecture
       link: /guides/architecture
     - theme: alt
