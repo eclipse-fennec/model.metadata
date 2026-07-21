@@ -3,7 +3,7 @@
     copyrightText="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  Data In Motion Consulting - initial implementation"
     modelDirectory="/org.eclipse.fennec.model.metadata/src" modelPluginID="org.eclipse.fennec.model.metadata"
     modelName="Metadata-api" rootExtendsInterface="" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    importerID="org.eclipse.emf.importer.ecore" complianceLevel="21.0" copyrightFields="false"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="17.0" copyrightFields="false"
     usedGenPackages="metadata.genmodel#//metadata" operationReflection="true" importOrganizing="true"
     oSGiCompatible="true">
   <foreignModel>metadata-api.ecore</foreignModel>
@@ -40,6 +40,14 @@
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexReader/findFeaturesByAnnotation/key"/>
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexReader/findFeaturesByAnnotation/value"/>
       </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexReader/findOperationByURI">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexReader/findOperationByURI/uri"/>
+      </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexReader/findOperationsByAnnotation">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexReader/findOperationsByAnnotation/annotationSource"/>
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexReader/findOperationsByAnnotation/key"/>
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexReader/findOperationsByAnnotation/value"/>
+      </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="metadata-api.ecore#//MetadataIndexWriter">
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexWriter/indexPackage">
@@ -51,6 +59,9 @@
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexWriter/indexFeature">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexWriter/indexFeature/featureMetadata"/>
       </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexWriter/indexOperation">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexWriter/indexOperation/operationMetadata"/>
+      </genOperations>
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexWriter/removePackage">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexWriter/removePackage/packageMetadata"/>
       </genOperations>
@@ -59,6 +70,9 @@
       </genOperations>
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexWriter/removeFeature">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexWriter/removeFeature/featureMetadata"/>
+      </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexWriter/removeOperation">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexWriter/removeOperation/operationMetadata"/>
       </genOperations>
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexWriter/clear"/>
     </genClasses>
@@ -104,6 +118,20 @@
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getFeatureAspect">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getFeatureAspect/feature"/>
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getFeatureAspect/aspectTypeId"/>
+      </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getOperationMetadata">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getOperationMetadata/operation"/>
+      </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getOperationMetadataByURI">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getOperationMetadataByURI/uri"/>
+      </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getOperationMetadataFromClass">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getOperationMetadataFromClass/operationName"/>
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getOperationMetadataFromClass/classMetadata"/>
+      </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getOperationAspect">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getOperationAspect/operation"/>
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getOperationAspect/aspectTypeId"/>
       </genOperations>
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getPackageProfile">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getPackageProfile/ePackage"/>
@@ -176,6 +204,10 @@
       </genOperations>
       <genOperations ecoreOperation="metadata-api.ecore#//AspectProvider/buildReferenceAspect">
         <genParameters ecoreParameter="metadata-api.ecore#//AspectProvider/buildReferenceAspect/referenceMetadata"/>
+      </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//AspectProvider/buildOperationAspect"
+          body="return null;">
+        <genParameters ecoreParameter="metadata-api.ecore#//AspectProvider/buildOperationAspect/operationMetadata"/>
       </genOperations>
       <genOperations ecoreOperation="metadata-api.ecore#//AspectProvider/buildProfiles">
         <genParameters ecoreParameter="metadata-api.ecore#//AspectProvider/buildProfiles/filteredMetadataCopy"/>

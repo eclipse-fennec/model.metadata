@@ -145,6 +145,13 @@ public class MetadataSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case MetadataPackage.OPERATION_ASPECT: {
+				OperationAspect operationAspect = (OperationAspect)theEObject;
+				T result = caseOperationAspect(operationAspect);
+				if (result == null) result = caseAspect(operationAspect);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case MetadataPackage.PACKAGE_PROFILE: {
 				PackageProfile packageProfile = (PackageProfile)theEObject;
 				T result = casePackageProfile(packageProfile);
@@ -191,6 +198,20 @@ public class MetadataSwitch<T> extends Switch<T> {
 				T result = caseReferenceMetadata(referenceMetadata);
 				if (result == null) result = caseFeatureMetadata(referenceMetadata);
 				if (result == null) result = caseDiagnosticContainer(referenceMetadata);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case MetadataPackage.OPERATION_METADATA: {
+				OperationMetadata operationMetadata = (OperationMetadata)theEObject;
+				T result = caseOperationMetadata(operationMetadata);
+				if (result == null) result = caseDiagnosticContainer(operationMetadata);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case MetadataPackage.PARAMETER_METADATA: {
+				ParameterMetadata parameterMetadata = (ParameterMetadata)theEObject;
+				T result = caseParameterMetadata(parameterMetadata);
+				if (result == null) result = caseDiagnosticContainer(parameterMetadata);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -370,6 +391,21 @@ public class MetadataSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Operation Aspect</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Operation Aspect</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseOperationAspect(OperationAspect object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Package Profile</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -471,6 +507,36 @@ public class MetadataSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseReferenceMetadata(ReferenceMetadata object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Operation Metadata</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Operation Metadata</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseOperationMetadata(OperationMetadata object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Parameter Metadata</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Parameter Metadata</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseParameterMetadata(ParameterMetadata object) {
 		return null;
 	}
 

@@ -80,6 +80,24 @@ public interface MetadataFactory extends EFactory {
 	ReferenceMetadata createReferenceMetadata();
 
 	/**
+	 * Returns a new object of class '<em>Operation Metadata</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Operation Metadata</em>'.
+	 * @generated
+	 */
+	OperationMetadata createOperationMetadata();
+
+	/**
+	 * Returns a new object of class '<em>Parameter Metadata</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Parameter Metadata</em>'.
+	 * @generated
+	 */
+	ParameterMetadata createParameterMetadata();
+
+	/**
 	 * Returns a new object of class '<em>Registry</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

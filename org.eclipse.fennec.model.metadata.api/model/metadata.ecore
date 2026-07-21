@@ -465,6 +465,17 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OperationAspect" abstract="true" eSuperTypes="#//Aspect">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Base class for aspects attached to OperationMetadata. Provides a bidirectional reference to the owning OperationMetadata, enabling navigation from the aspect back to the metadata context and up to the class level."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operationMetadata" eType="#//OperationMetadata"
+        eOpposite="#//OperationMetadata/aspects">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The OperationMetadata that contains this aspect. Bidirectional opposite of OperationMetadata.aspects. Use operationMetadata.getEOperation() to access the original EOperation. Navigate operationMetadata.getClassMetadata() to reach the owning class."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PackageProfile" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Base class for pre-computed, provider-specific profiles at the package level. A profile aggregates the fully resolved annotation-layer configuration for all classes in a package. Built by AspectProvider.buildProfiles() after all metadata and aspects are constructed. Concrete subclasses (e.g., CodecPackageProfile) contain provider-specific content. Contained by PackageMetadata.profiles (one per provider)."/>
@@ -559,6 +570,12 @@
         eType="#//FeatureMetadata" containment="true" eOpposite="#//FeatureMetadata/classMetadata">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Metadata for all EStructuralFeatures of this EClass. Bidirectional: each FeatureMetadata has a back-reference via FeatureMetadata.classMetadata. Order matches the EClass feature order."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operations" upperBound="-1"
+        eType="#//OperationMetadata" containment="true" eOpposite="#//OperationMetadata/classMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Metadata for all EOperations of this EClass. Bidirectional: each OperationMetadata has a back-reference via OperationMetadata.classMetadata. Order matches the EClass operation order."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="superTypes" upperBound="-1"
@@ -680,6 +697,76 @@
         defaultValueLiteral="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Whether this reference has an opposite reference (is part of a bidirectional association). Quick check to avoid null-checking oppositeMetadata during serialization."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OperationMetadata" eSuperTypes="#//DiagnosticContainer">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Pre-computed metadata for an EOperation. Contains cached properties for fast access, the resolved return-type metadata, parameter metadata for all EParameters, and aspects from all registered AspectProviders. Contained by ClassMetadata.operations."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="classMetadata" eType="#//ClassMetadata"
+        eOpposite="#//ClassMetadata/operations">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The parent ClassMetadata. Bidirectional opposite of ClassMetadata.operations. Navigate to classMetadata.getPackage() to reach the PackageMetadata."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eOperation" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EOperation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The EOperation this metadata describes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Cached operation name. Avoids repeated eOperation.getName() calls."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operationID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Cached operation ID from the EClass. Used for fast operation lookup by numeric ID. Value -1 indicates uninitialized."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnTypeMetadata" eType="#//ClassMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Pre-resolved metadata for the EOperation return type, when the return EClassifier is an EClass in a registered package. Null for void operations, EDataType returns, or unregistered target packages. Resolved during package registration after all ClassMetadata are created."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
+        eType="#//ParameterMetadata" containment="true" eOpposite="#//ParameterMetadata/operationMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Metadata for all EParameters of this EOperation, in declaration order. Bidirectional: each ParameterMetadata has a back-reference via ParameterMetadata.operationMetadata."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="aspects" upperBound="-1"
+        eType="#//OperationAspect" containment="true" eOpposite="#//OperationAspect/operationMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Aspects attached to this operation by registered AspectProviders. One aspect per provider (identified by typeId). Bidirectional: each OperationAspect has a back-reference via OperationAspect.operationMetadata."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ParameterMetadata" eSuperTypes="#//DiagnosticContainer">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Pre-computed metadata for an EParameter of an EOperation. Contains cached properties and the resolved parameter-type metadata. Contained by OperationMetadata.parameters."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operationMetadata" eType="#//OperationMetadata"
+        eOpposite="#//OperationMetadata/parameters">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The parent OperationMetadata. Bidirectional opposite of OperationMetadata.parameters."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eParameter" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EParameter">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The EParameter this metadata describes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Cached parameter name. Avoids repeated eParameter.getName() calls."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typeMetadata" eType="#//ClassMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Pre-resolved metadata for the parameter type, when the parameter EClassifier is an EClass in a registered package. Null for EDataType parameters or unregistered target packages. Resolved during package registration."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

@@ -14,6 +14,7 @@ package org.eclipse.fennec.model.metadata.api;
 
 import org.eclipse.fennec.model.metadata.ClassMetadata;
 import org.eclipse.fennec.model.metadata.FeatureMetadata;
+import org.eclipse.fennec.model.metadata.OperationMetadata;
 import org.eclipse.fennec.model.metadata.PackageMetadata;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -38,7 +39,7 @@ public interface MetadataIndexWriter {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Index a PackageMetadata and all its contained ClassMetadata and FeatureMetadata. Called by MetadataService after registerPackage completes.
+	 * Index a PackageMetadata and all its contained ClassMetadata, FeatureMetadata and OperationMetadata. Called by MetadataService after registerPackage completes.
 	 * <!-- end-model-doc -->
 	 * @model
 	 * @generated
@@ -49,7 +50,7 @@ public interface MetadataIndexWriter {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Index a single ClassMetadata and all its contained FeatureMetadata.
+	 * Index a single ClassMetadata and all its contained FeatureMetadata and OperationMetadata.
 	 * <!-- end-model-doc -->
 	 * @model
 	 * @generated
@@ -71,6 +72,17 @@ public interface MetadataIndexWriter {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
+	 * Index a single OperationMetadata.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	void indexOperation(OperationMetadata operationMetadata);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
 	 * Remove a PackageMetadata and all its contained metadata from the index. Called by MetadataService during unregisterPackage.
 	 * <!-- end-model-doc -->
 	 * @model
@@ -82,7 +94,7 @@ public interface MetadataIndexWriter {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Remove a ClassMetadata and all its contained FeatureMetadata from the index.
+	 * Remove a ClassMetadata and all its contained FeatureMetadata and OperationMetadata from the index.
 	 * <!-- end-model-doc -->
 	 * @model
 	 * @generated
@@ -99,6 +111,17 @@ public interface MetadataIndexWriter {
 	 * @generated
 	 */
 	void removeFeature(FeatureMetadata featureMetadata);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Remove an OperationMetadata from the index.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	void removeOperation(OperationMetadata operationMetadata);
 
 	/**
 	 * <!-- begin-user-doc -->

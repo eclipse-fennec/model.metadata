@@ -16,6 +16,7 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.fennec.model.metadata.ClassMetadata;
 import org.eclipse.fennec.model.metadata.FeatureMetadata;
+import org.eclipse.fennec.model.metadata.OperationMetadata;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -122,5 +123,27 @@ public interface MetadataIndexReader {
 	 * @generated
 	 */
 	EList<FeatureMetadata> findFeaturesByAnnotation(String annotationSource, String key, String value);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Find OperationMetadata by its full EMF URI (e.g., 'http://example.org/model#//Person/greet').
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	OperationMetadata findOperationByURI(String uri);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Find all OperationMetadata where the EOperation has an EAnnotation with the given source, key, and value. Pass null for value to match any value for the given key. Useful e.g. for locating OCL constraints attached to operations.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	EList<OperationMetadata> findOperationsByAnnotation(String annotationSource, String key, String value);
 
 } // MetadataIndexReader

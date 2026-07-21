@@ -24,7 +24,9 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
@@ -33,15 +35,19 @@ import org.eclipse.fennec.model.metadata.ClassAspect;
 import org.eclipse.fennec.model.metadata.ClassMetadata;
 import org.eclipse.fennec.model.metadata.FeatureAspect;
 import org.eclipse.fennec.model.metadata.FeatureMetadata;
+import org.eclipse.fennec.model.metadata.OperationAspect;
+import org.eclipse.fennec.model.metadata.OperationMetadata;
 import org.eclipse.fennec.model.metadata.PackageAspect;
 import org.eclipse.fennec.model.metadata.PackageMetadata;
 import org.eclipse.fennec.model.metadata.PackageProfile;
+import org.eclipse.fennec.model.metadata.ParameterMetadata;
 import org.eclipse.fennec.model.metadata.ReferenceMetadata;
 import org.eclipse.fennec.model.metadata.api.AspectProvider;
 import org.eclipse.fennec.model.metadata.api.MetadataHandler;
 import org.eclipse.fennec.model.metadata.api.MetadataWhiteboard;
 import org.eclipse.fennec.model.metadata.impl.ClassAspectImpl;
 import org.eclipse.fennec.model.metadata.impl.FeatureAspectImpl;
+import org.eclipse.fennec.model.metadata.impl.OperationAspectImpl;
 import org.eclipse.fennec.model.metadata.impl.PackageAspectImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,6 +65,9 @@ class MetadataServiceImplTest {
     private EAttribute idAttr;
     private EReference addressRef;
     private EReference personRef;
+    private EOperation greetOp;
+    private EOperation findAddressOp;
+    private EOperation setAddressOp;
 
     @BeforeEach
     void setUp() {
@@ -111,6 +120,32 @@ class MetadataServiceImplTest {
         // Set opposites
         addressRef.setEOpposite(personRef);
         personRef.setEOpposite(addressRef);
+
+        // Operations on Person
+        // greet(String greeting) : EString — EDataType return + EDataType parameter
+        greetOp = EcoreFactory.eINSTANCE.createEOperation();
+        greetOp.setName("greet");
+        greetOp.setEType(EcorePackage.Literals.ESTRING);
+        EParameter greeting = EcoreFactory.eINSTANCE.createEParameter();
+        greeting.setName("greeting");
+        greeting.setEType(EcorePackage.Literals.ESTRING);
+        greetOp.getEParameters().add(greeting);
+        personClass.getEOperations().add(greetOp);
+
+        // findAddress() : Address — EClass return, no parameters
+        findAddressOp = EcoreFactory.eINSTANCE.createEOperation();
+        findAddressOp.setName("findAddress");
+        findAddressOp.setEType(addressClass);
+        personClass.getEOperations().add(findAddressOp);
+
+        // setAddress(Address newAddress) : void — EClass parameter, void return
+        setAddressOp = EcoreFactory.eINSTANCE.createEOperation();
+        setAddressOp.setName("setAddress");
+        EParameter newAddress = EcoreFactory.eINSTANCE.createEParameter();
+        newAddress.setName("newAddress");
+        newAddress.setEType(addressClass);
+        setAddressOp.getEParameters().add(newAddress);
+        personClass.getEOperations().add(setAddressOp);
     }
 
     // ========================================================================
@@ -651,6 +686,129 @@ class MetadataServiceImplTest {
     }
 
     // ========================================================================
+    // EOperation Metadata Tests
+    // ========================================================================
+
+    @Test
+    void testOperationMetadataBuilt() {
+        service.registerPackage(testPackage);
+
+        ClassMetadata personMeta = service.getClassMetadata(personClass);
+        assertEquals(3, personMeta.getOperations().size());
+
+        OperationMetadata greetMeta = personMeta.getOperations().get(0);
+        assertEquals("greet", greetMeta.getName());
+        assertEquals(greetOp, greetMeta.getEOperation());
+        assertEquals(greetOp.getOperationID(), greetMeta.getOperationID());
+        assertSame(personMeta, greetMeta.getClassMetadata(),
+                "OperationMetadata should have a back-reference to its ClassMetadata");
+    }
+
+    @Test
+    void testGetOperationMetadata() {
+        service.registerPackage(testPackage);
+
+        OperationMetadata greetMeta = service.getOperationMetadata(greetOp);
+        assertNotNull(greetMeta);
+        assertEquals("greet", greetMeta.getName());
+
+        // Unregistered / null operation
+        assertNull(service.getOperationMetadata(null));
+        assertNull(service.getOperationMetadata(EcoreFactory.eINSTANCE.createEOperation()));
+    }
+
+    @Test
+    void testGetOperationMetadataFromClass() {
+        service.registerPackage(testPackage);
+        ClassMetadata personMeta = service.getClassMetadata(personClass);
+
+        OperationMetadata found = service.getOperationMetadataFromClass("findAddress", personMeta);
+        assertNotNull(found);
+        assertEquals(findAddressOp, found.getEOperation());
+
+        assertNull(service.getOperationMetadataFromClass("doesNotExist", personMeta));
+        assertNull(service.getOperationMetadataFromClass(null, personMeta));
+        assertNull(service.getOperationMetadataFromClass("greet", null));
+    }
+
+    @Test
+    void testOperationParametersBuilt() {
+        service.registerPackage(testPackage);
+
+        OperationMetadata greetMeta = service.getOperationMetadata(greetOp);
+        assertEquals(1, greetMeta.getParameters().size());
+        ParameterMetadata greeting = greetMeta.getParameters().get(0);
+        assertEquals("greeting", greeting.getName());
+        assertSame(greetMeta, greeting.getOperationMetadata(),
+                "ParameterMetadata should have a back-reference to its OperationMetadata");
+
+        assertEquals(0, service.getOperationMetadata(findAddressOp).getParameters().size());
+        assertEquals(1, service.getOperationMetadata(setAddressOp).getParameters().size());
+    }
+
+    @Test
+    void testOperationReturnTypeResolution() {
+        service.registerPackage(testPackage);
+        ClassMetadata addressMeta = service.getClassMetadata(addressClass);
+
+        // findAddress() : Address -> resolved to the Address ClassMetadata
+        assertSame(addressMeta, service.getOperationMetadata(findAddressOp).getReturnTypeMetadata());
+
+        // greet() : EString (EDataType) -> null
+        assertNull(service.getOperationMetadata(greetOp).getReturnTypeMetadata());
+
+        // setAddress() : void -> null
+        assertNull(service.getOperationMetadata(setAddressOp).getReturnTypeMetadata());
+    }
+
+    @Test
+    void testOperationParameterTypeResolution() {
+        service.registerPackage(testPackage);
+        ClassMetadata addressMeta = service.getClassMetadata(addressClass);
+
+        // setAddress(Address newAddress) -> parameter type resolved to Address ClassMetadata
+        ParameterMetadata newAddress = service.getOperationMetadata(setAddressOp).getParameters().get(0);
+        assertSame(addressMeta, newAddress.getTypeMetadata());
+
+        // greet(String greeting) -> EDataType parameter -> null
+        ParameterMetadata greeting = service.getOperationMetadata(greetOp).getParameters().get(0);
+        assertNull(greeting.getTypeMetadata());
+    }
+
+    @Test
+    void testOperationAspectAppliedOnRegistration() {
+        TestAspectProvider provider = new TestAspectProvider();
+        service.registerAspectProvider(provider);
+        service.registerPackage(testPackage);
+
+        OperationAspect aspect = service.getOperationAspect(greetOp, "test");
+        assertNotNull(aspect);
+        assertEquals("test", aspect.getTypeId());
+        assertSame(service.getOperationMetadata(greetOp), aspect.getOperationMetadata(),
+                "OperationAspect should have a back-reference to its OperationMetadata");
+    }
+
+    @Test
+    void testOperationAspectAppliedToExistingMetadata() {
+        service.registerPackage(testPackage);
+
+        TestAspectProvider provider = new TestAspectProvider();
+        service.registerAspectProvider(provider);
+
+        assertNotNull(service.getOperationAspect(greetOp, "test"));
+        assertNotNull(service.getOperationAspect(findAddressOp, "test"));
+    }
+
+    @Test
+    void testUnregisterPackageRemovesOperationLookup() {
+        service.registerPackage(testPackage);
+        assertNotNull(service.getOperationMetadata(greetOp));
+
+        service.unregisterPackage(testPackage);
+        assertNull(service.getOperationMetadata(greetOp));
+    }
+
+    // ========================================================================
     // Test AspectProvider Implementations
     // ========================================================================
 
@@ -690,6 +848,11 @@ class MetadataServiceImplTest {
         }
 
         @Override
+        public OperationAspect buildOperationAspect(OperationMetadata operationMetadata) {
+            return new TestOperationAspect();
+        }
+
+        @Override
         public PackageProfile buildProfiles(PackageMetadata filteredMetadataCopy) {
             return null;
         }
@@ -706,6 +869,13 @@ class MetadataServiceImplTest {
      * Test FeatureAspect implementation.
      */
     private static class TestFeatureAspect extends FeatureAspectImpl {
+        // Uses default implementation
+    }
+
+    /**
+     * Test OperationAspect implementation.
+     */
+    private static class TestOperationAspect extends OperationAspectImpl {
         // Uses default implementation
     }
 
@@ -741,6 +911,11 @@ class MetadataServiceImplTest {
 
         @Override
         public FeatureAspect buildReferenceAspect(ReferenceMetadata referenceMetadata) {
+            return null;
+        }
+
+        @Override
+        public OperationAspect buildOperationAspect(OperationMetadata operationMetadata) {
             return null;
         }
 

@@ -37,6 +37,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *   <li>{@link org.eclipse.fennec.model.metadata.ClassMetadata#getClassifierID <em>Classifier ID</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.ClassMetadata#getTypeURI <em>Type URI</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.ClassMetadata#getFeatures <em>Features</em>}</li>
+ *   <li>{@link org.eclipse.fennec.model.metadata.ClassMetadata#getOperations <em>Operations</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.ClassMetadata#getSuperTypes <em>Super Types</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.ClassMetadata#getAllSuperTypes <em>All Super Types</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.ClassMetadata#getIdFeatures <em>Id Features</em>}</li>
@@ -194,6 +195,23 @@ public interface ClassMetadata extends DiagnosticContainer {
 	 * @generated
 	 */
 	EList<FeatureMetadata> getFeatures();
+
+	/**
+	 * Returns the value of the '<em><b>Operations</b></em>' containment reference list.
+	 * The list contents are of type {@link org.eclipse.fennec.model.metadata.OperationMetadata}.
+	 * It is bidirectional and its opposite is '{@link org.eclipse.fennec.model.metadata.OperationMetadata#getClassMetadata <em>Class Metadata</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Metadata for all EOperations of this EClass. Bidirectional: each OperationMetadata has a back-reference via OperationMetadata.classMetadata. Order matches the EClass operation order.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Operations</em>' containment reference list.
+	 * @see org.eclipse.fennec.model.metadata.MetadataPackage#getClassMetadata_Operations()
+	 * @see org.eclipse.fennec.model.metadata.OperationMetadata#getClassMetadata
+	 * @model opposite="classMetadata" containment="true"
+	 * @generated
+	 */
+	EList<OperationMetadata> getOperations();
 
 	/**
 	 * Returns the value of the '<em><b>Super Types</b></em>' reference list.

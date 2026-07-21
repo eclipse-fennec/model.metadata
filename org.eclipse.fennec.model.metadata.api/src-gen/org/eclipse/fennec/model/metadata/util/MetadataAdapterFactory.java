@@ -122,6 +122,10 @@ public class MetadataAdapterFactory extends AdapterFactoryImpl {
 				return createFeatureAspectAdapter();
 			}
 			@Override
+			public Adapter caseOperationAspect(OperationAspect object) {
+				return createOperationAspectAdapter();
+			}
+			@Override
 			public Adapter casePackageProfile(PackageProfile object) {
 				return createPackageProfileAdapter();
 			}
@@ -148,6 +152,14 @@ public class MetadataAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseReferenceMetadata(ReferenceMetadata object) {
 				return createReferenceMetadataAdapter();
+			}
+			@Override
+			public Adapter caseOperationMetadata(OperationMetadata object) {
+				return createOperationMetadataAdapter();
+			}
+			@Override
+			public Adapter caseParameterMetadata(ParameterMetadata object) {
+				return createParameterMetadataAdapter();
 			}
 			@Override
 			public Adapter caseMetadataRegistry(MetadataRegistry object) {
@@ -328,6 +340,20 @@ public class MetadataAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.model.metadata.OperationAspect <em>Operation Aspect</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.model.metadata.OperationAspect
+	 * @generated
+	 */
+	public Adapter createOperationAspectAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.model.metadata.PackageProfile <em>Package Profile</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -422,6 +448,34 @@ public class MetadataAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createReferenceMetadataAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.model.metadata.OperationMetadata <em>Operation Metadata</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.model.metadata.OperationMetadata
+	 * @generated
+	 */
+	public Adapter createOperationMetadataAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.fennec.model.metadata.ParameterMetadata <em>Parameter Metadata</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.fennec.model.metadata.ParameterMetadata
+	 * @generated
+	 */
+	public Adapter createParameterMetadataAdapter() {
 		return null;
 	}
 

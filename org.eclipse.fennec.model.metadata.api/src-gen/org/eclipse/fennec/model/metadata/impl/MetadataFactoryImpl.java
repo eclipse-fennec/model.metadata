@@ -72,6 +72,8 @@ public class MetadataFactoryImpl extends EFactoryImpl implements MetadataFactory
 			case MetadataPackage.CLASS_METADATA: return createClassMetadata();
 			case MetadataPackage.ATTRIBUTE_METADATA: return createAttributeMetadata();
 			case MetadataPackage.REFERENCE_METADATA: return createReferenceMetadata();
+			case MetadataPackage.OPERATION_METADATA: return createOperationMetadata();
+			case MetadataPackage.PARAMETER_METADATA: return createParameterMetadata();
 			case MetadataPackage.METADATA_REGISTRY: return createMetadataRegistry();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -185,6 +187,28 @@ public class MetadataFactoryImpl extends EFactoryImpl implements MetadataFactory
 	public ReferenceMetadata createReferenceMetadata() {
 		ReferenceMetadataImpl referenceMetadata = new ReferenceMetadataImpl();
 		return referenceMetadata;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public OperationMetadata createOperationMetadata() {
+		OperationMetadataImpl operationMetadata = new OperationMetadataImpl();
+		return operationMetadata;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ParameterMetadata createParameterMetadata() {
+		ParameterMetadataImpl parameterMetadata = new ParameterMetadataImpl();
+		return parameterMetadata;
 	}
 
 	/**

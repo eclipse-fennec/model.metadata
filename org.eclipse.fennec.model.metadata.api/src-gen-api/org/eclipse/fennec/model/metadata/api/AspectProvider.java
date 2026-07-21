@@ -17,6 +17,8 @@ import org.eclipse.fennec.model.metadata.ClassAspect;
 import org.eclipse.fennec.model.metadata.ClassMetadata;
 import org.eclipse.fennec.model.metadata.FeatureAspect;
 import org.eclipse.fennec.model.metadata.FeatureMetadata;
+import org.eclipse.fennec.model.metadata.OperationAspect;
+import org.eclipse.fennec.model.metadata.OperationMetadata;
 import org.eclipse.fennec.model.metadata.PackageAspect;
 import org.eclipse.fennec.model.metadata.PackageMetadata;
 import org.eclipse.fennec.model.metadata.PackageProfile;
@@ -105,6 +107,17 @@ public interface AspectProvider {
 	 * @generated
 	 */
 	FeatureAspect buildReferenceAspect(ReferenceMetadata referenceMetadata);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Build an OperationAspect for the given OperationMetadata. Called once per EOperation during registration. The metadata provides access to the EOperation via operationMetadata.getEOperation(), to the owning class via operationMetadata.getClassMetadata(), and to parameters via operationMetadata.getParameters(). Returns null if this provider does not contribute operation-level aspects.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	OperationAspect buildOperationAspect(OperationMetadata operationMetadata);
 
 	/**
 	 * <!-- begin-user-doc -->

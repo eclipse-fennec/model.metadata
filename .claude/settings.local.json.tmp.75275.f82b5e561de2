@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo *)",
+      "Bash(xargs -n1 basename)",
+      "Bash(sort -t: -k2)",
+      "Bash(uniq -c -f1)",
+      "Bash(gh issue *)",
+      "Read(//opt/git/emf.util/.github/workflows/**)",
+      "Read(//opt/git/emf.util/.github/**)",
+      "Bash(git -C /opt/git/emf.util remote -v)",
+      "Bash(git checkout *)",
+      "Bash(git rm *)",
+      "Bash(cp /opt/git/emf.util/docs-site/docs/public/fennec-logo.png docs-site/docs/public/fennec-logo.png)",
+      "Bash(cp /opt/git/emf.util/docs-site/docs/.vitepress/theme/custom.css docs-site/docs/.vitepress/theme/custom.css)",
+      "Bash(cp /opt/git/emf.util/docs-site/docs/.vitepress/theme/index.ts docs-site/docs/.vitepress/theme/index.ts)",
+      "Bash(cp /opt/git/emf.util/docs-site/package-lock.json docs-site/package-lock.json)",
+      "Bash(npm ci *)",
+      "Bash(DOCS_BRANCH=snapshot npm run docs:build)",
+      "Bash(gh run *)",
+      "Bash(gh api *)",
+      "Bash(gh pr *)",
+      "Bash(curl -s -L --max-time 20 \"https://eclipse-fennec.github.io/model.metadata/snapshot/\")",
+      "Bash(./gradlew :org.eclipse.fennec.model.metadata:test --console=plain)",
+      "Bash(python3 -c \"import xml.dom.minidom; xml.dom.minidom.parse\\('metadata-api.ecore'\\)\")",
+      "Read(//opt/git/m2m/workspace/**)",
+      "Read(//opt/git/emf.persistence-jpa/**)",
+      "Read(//opt/git/fennec-odata/fennec-odata/**)",
+      "Bash(grep -nE \"^#{2,3} \" docs/unified-persistence/concept.md)",
+      "Bash(./gradlew :org.eclipse.fennec.model.metadata:test --tests \"*DefaultFingerprintServiceTest*\" --console=plain)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git rev-list *)",
+      "Bash(git fetch *)",
+      "Bash(git ls-tree *)",
+      "Bash(git push *)",
+      "Bash(git worktree *)",
+      "Bash(git branch *)",
+      "Bash(git reset *)"
+    ]
+  }
+}

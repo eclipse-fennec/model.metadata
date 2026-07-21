@@ -164,13 +164,31 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	int METADATA_INDEX_READER___FIND_FEATURES_BY_ANNOTATION__STRING_STRING_STRING = 7;
 
 	/**
+	 * The operation id for the '<em>Find Operation By URI</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_INDEX_READER___FIND_OPERATION_BY_URI__STRING = 8;
+
+	/**
+	 * The operation id for the '<em>Find Operations By Annotation</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_INDEX_READER___FIND_OPERATIONS_BY_ANNOTATION__STRING_STRING_STRING = 9;
+
+	/**
 	 * The number of operations of the '<em>Metadata Index Reader</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX_READER_OPERATION_COUNT = 8;
+	int METADATA_INDEX_READER_OPERATION_COUNT = 10;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.model.metadata.api.MetadataIndexWriter <em>Metadata Index Writer</em>}' class.
@@ -219,13 +237,22 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	int METADATA_INDEX_WRITER___INDEX_FEATURE__FEATUREMETADATA = 2;
 
 	/**
+	 * The operation id for the '<em>Index Operation</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_INDEX_WRITER___INDEX_OPERATION__OPERATIONMETADATA = 3;
+
+	/**
 	 * The operation id for the '<em>Remove Package</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX_WRITER___REMOVE_PACKAGE__PACKAGEMETADATA = 3;
+	int METADATA_INDEX_WRITER___REMOVE_PACKAGE__PACKAGEMETADATA = 4;
 
 	/**
 	 * The operation id for the '<em>Remove Class</em>' operation.
@@ -234,7 +261,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX_WRITER___REMOVE_CLASS__CLASSMETADATA = 4;
+	int METADATA_INDEX_WRITER___REMOVE_CLASS__CLASSMETADATA = 5;
 
 	/**
 	 * The operation id for the '<em>Remove Feature</em>' operation.
@@ -243,7 +270,16 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX_WRITER___REMOVE_FEATURE__FEATUREMETADATA = 5;
+	int METADATA_INDEX_WRITER___REMOVE_FEATURE__FEATUREMETADATA = 6;
+
+	/**
+	 * The operation id for the '<em>Remove Operation</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_INDEX_WRITER___REMOVE_OPERATION__OPERATIONMETADATA = 7;
 
 	/**
 	 * The operation id for the '<em>Clear</em>' operation.
@@ -252,7 +288,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX_WRITER___CLEAR = 6;
+	int METADATA_INDEX_WRITER___CLEAR = 8;
 
 	/**
 	 * The number of operations of the '<em>Metadata Index Writer</em>' class.
@@ -261,7 +297,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX_WRITER_OPERATION_COUNT = 7;
+	int METADATA_INDEX_WRITER_OPERATION_COUNT = 9;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.model.metadata.api.MetadataIndex <em>Metadata Index</em>}' class.
@@ -355,6 +391,24 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	int METADATA_INDEX___FIND_FEATURES_BY_ANNOTATION__STRING_STRING_STRING = METADATA_INDEX_READER___FIND_FEATURES_BY_ANNOTATION__STRING_STRING_STRING;
 
 	/**
+	 * The operation id for the '<em>Find Operation By URI</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_INDEX___FIND_OPERATION_BY_URI__STRING = METADATA_INDEX_READER___FIND_OPERATION_BY_URI__STRING;
+
+	/**
+	 * The operation id for the '<em>Find Operations By Annotation</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_INDEX___FIND_OPERATIONS_BY_ANNOTATION__STRING_STRING_STRING = METADATA_INDEX_READER___FIND_OPERATIONS_BY_ANNOTATION__STRING_STRING_STRING;
+
+	/**
 	 * The operation id for the '<em>Index Package</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -382,13 +436,22 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	int METADATA_INDEX___INDEX_FEATURE__FEATUREMETADATA = METADATA_INDEX_READER_OPERATION_COUNT + 2;
 
 	/**
+	 * The operation id for the '<em>Index Operation</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_INDEX___INDEX_OPERATION__OPERATIONMETADATA = METADATA_INDEX_READER_OPERATION_COUNT + 3;
+
+	/**
 	 * The operation id for the '<em>Remove Package</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX___REMOVE_PACKAGE__PACKAGEMETADATA = METADATA_INDEX_READER_OPERATION_COUNT + 3;
+	int METADATA_INDEX___REMOVE_PACKAGE__PACKAGEMETADATA = METADATA_INDEX_READER_OPERATION_COUNT + 4;
 
 	/**
 	 * The operation id for the '<em>Remove Class</em>' operation.
@@ -397,7 +460,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX___REMOVE_CLASS__CLASSMETADATA = METADATA_INDEX_READER_OPERATION_COUNT + 4;
+	int METADATA_INDEX___REMOVE_CLASS__CLASSMETADATA = METADATA_INDEX_READER_OPERATION_COUNT + 5;
 
 	/**
 	 * The operation id for the '<em>Remove Feature</em>' operation.
@@ -406,7 +469,16 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX___REMOVE_FEATURE__FEATUREMETADATA = METADATA_INDEX_READER_OPERATION_COUNT + 5;
+	int METADATA_INDEX___REMOVE_FEATURE__FEATUREMETADATA = METADATA_INDEX_READER_OPERATION_COUNT + 6;
+
+	/**
+	 * The operation id for the '<em>Remove Operation</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_INDEX___REMOVE_OPERATION__OPERATIONMETADATA = METADATA_INDEX_READER_OPERATION_COUNT + 7;
 
 	/**
 	 * The operation id for the '<em>Clear</em>' operation.
@@ -415,7 +487,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX___CLEAR = METADATA_INDEX_READER_OPERATION_COUNT + 6;
+	int METADATA_INDEX___CLEAR = METADATA_INDEX_READER_OPERATION_COUNT + 8;
 
 	/**
 	 * The number of operations of the '<em>Metadata Index</em>' class.
@@ -424,7 +496,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_INDEX_OPERATION_COUNT = METADATA_INDEX_READER_OPERATION_COUNT + 7;
+	int METADATA_INDEX_OPERATION_COUNT = METADATA_INDEX_READER_OPERATION_COUNT + 9;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService <em>Metadata Service</em>}' class.
@@ -554,13 +626,49 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	int METADATA_SERVICE___GET_FEATURE_ASPECT__ESTRUCTURALFEATURE_STRING = 11;
 
 	/**
+	 * The operation id for the '<em>Get Operation Metadata</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_SERVICE___GET_OPERATION_METADATA__EOPERATION = 12;
+
+	/**
+	 * The operation id for the '<em>Get Operation Metadata By URI</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_SERVICE___GET_OPERATION_METADATA_BY_URI__STRING = 13;
+
+	/**
+	 * The operation id for the '<em>Get Operation Metadata From Class</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_SERVICE___GET_OPERATION_METADATA_FROM_CLASS__STRING_CLASSMETADATA = 14;
+
+	/**
+	 * The operation id for the '<em>Get Operation Aspect</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_SERVICE___GET_OPERATION_ASPECT__EOPERATION_STRING = 15;
+
+	/**
 	 * The operation id for the '<em>Get Package Profile</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_PACKAGE_PROFILE__EPACKAGE_STRING = 12;
+	int METADATA_SERVICE___GET_PACKAGE_PROFILE__EPACKAGE_STRING = 16;
 
 	/**
 	 * The operation id for the '<em>Get Package Profile By Ns URI</em>' operation.
@@ -569,7 +677,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_PACKAGE_PROFILE_BY_NS_URI__STRING_STRING = 13;
+	int METADATA_SERVICE___GET_PACKAGE_PROFILE_BY_NS_URI__STRING_STRING = 17;
 
 	/**
 	 * The operation id for the '<em>Get Class Profile</em>' operation.
@@ -578,7 +686,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_CLASS_PROFILE__ECLASS_STRING = 14;
+	int METADATA_SERVICE___GET_CLASS_PROFILE__ECLASS_STRING = 18;
 
 	/**
 	 * The operation id for the '<em>Get Class Profile By URI</em>' operation.
@@ -587,7 +695,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_CLASS_PROFILE_BY_URI__STRING_STRING = 15;
+	int METADATA_SERVICE___GET_CLASS_PROFILE_BY_URI__STRING_STRING = 19;
 
 	/**
 	 * The operation id for the '<em>Get Registry</em>' operation.
@@ -596,7 +704,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_REGISTRY = 16;
+	int METADATA_SERVICE___GET_REGISTRY = 20;
 
 	/**
 	 * The number of operations of the '<em>Metadata Service</em>' class.
@@ -605,7 +713,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE_OPERATION_COUNT = 17;
+	int METADATA_SERVICE_OPERATION_COUNT = 21;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.model.metadata.api.MetadataHandler <em>Metadata Handler</em>}' class.
@@ -788,6 +896,42 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @ordered
 	 */
 	int METADATA_WHITEBOARD___GET_FEATURE_ASPECT__ESTRUCTURALFEATURE_STRING = METADATA_SERVICE___GET_FEATURE_ASPECT__ESTRUCTURALFEATURE_STRING;
+
+	/**
+	 * The operation id for the '<em>Get Operation Metadata</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_WHITEBOARD___GET_OPERATION_METADATA__EOPERATION = METADATA_SERVICE___GET_OPERATION_METADATA__EOPERATION;
+
+	/**
+	 * The operation id for the '<em>Get Operation Metadata By URI</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_WHITEBOARD___GET_OPERATION_METADATA_BY_URI__STRING = METADATA_SERVICE___GET_OPERATION_METADATA_BY_URI__STRING;
+
+	/**
+	 * The operation id for the '<em>Get Operation Metadata From Class</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_WHITEBOARD___GET_OPERATION_METADATA_FROM_CLASS__STRING_CLASSMETADATA = METADATA_SERVICE___GET_OPERATION_METADATA_FROM_CLASS__STRING_CLASSMETADATA;
+
+	/**
+	 * The operation id for the '<em>Get Operation Aspect</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_WHITEBOARD___GET_OPERATION_ASPECT__EOPERATION_STRING = METADATA_SERVICE___GET_OPERATION_ASPECT__EOPERATION_STRING;
 
 	/**
 	 * The operation id for the '<em>Get Package Profile</em>' operation.
@@ -1007,13 +1151,22 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	int ASPECT_PROVIDER___BUILD_REFERENCE_ASPECT__REFERENCEMETADATA = 5;
 
 	/**
+	 * The operation id for the '<em>Build Operation Aspect</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ASPECT_PROVIDER___BUILD_OPERATION_ASPECT__OPERATIONMETADATA = 6;
+
+	/**
 	 * The operation id for the '<em>Build Profiles</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ASPECT_PROVIDER___BUILD_PROFILES__PACKAGEMETADATA = 6;
+	int ASPECT_PROVIDER___BUILD_PROFILES__PACKAGEMETADATA = 7;
 
 	/**
 	 * The number of operations of the '<em>Aspect Provider</em>' class.
@@ -1022,7 +1175,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ASPECT_PROVIDER_OPERATION_COUNT = 7;
+	int ASPECT_PROVIDER_OPERATION_COUNT = 8;
 
 
 	/**
@@ -1116,6 +1269,26 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	EOperation getMetadataIndexReader__FindFeaturesByAnnotation__String_String_String();
 
 	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataIndexReader#findOperationByURI(java.lang.String) <em>Find Operation By URI</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Find Operation By URI</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataIndexReader#findOperationByURI(java.lang.String)
+	 * @generated
+	 */
+	EOperation getMetadataIndexReader__FindOperationByURI__String();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataIndexReader#findOperationsByAnnotation(java.lang.String, java.lang.String, java.lang.String) <em>Find Operations By Annotation</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Find Operations By Annotation</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataIndexReader#findOperationsByAnnotation(java.lang.String, java.lang.String, java.lang.String)
+	 * @generated
+	 */
+	EOperation getMetadataIndexReader__FindOperationsByAnnotation__String_String_String();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.model.metadata.api.MetadataIndexWriter <em>Metadata Index Writer</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1156,6 +1329,16 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	EOperation getMetadataIndexWriter__IndexFeature__FeatureMetadata();
 
 	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataIndexWriter#indexOperation(org.eclipse.fennec.model.metadata.OperationMetadata) <em>Index Operation</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Index Operation</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataIndexWriter#indexOperation(org.eclipse.fennec.model.metadata.OperationMetadata)
+	 * @generated
+	 */
+	EOperation getMetadataIndexWriter__IndexOperation__OperationMetadata();
+
+	/**
 	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataIndexWriter#removePackage(org.eclipse.fennec.model.metadata.PackageMetadata) <em>Remove Package</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1184,6 +1367,16 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EOperation getMetadataIndexWriter__RemoveFeature__FeatureMetadata();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataIndexWriter#removeOperation(org.eclipse.fennec.model.metadata.OperationMetadata) <em>Remove Operation</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Remove Operation</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataIndexWriter#removeOperation(org.eclipse.fennec.model.metadata.OperationMetadata)
+	 * @generated
+	 */
+	EOperation getMetadataIndexWriter__RemoveOperation__OperationMetadata();
 
 	/**
 	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataIndexWriter#clear() <em>Clear</em>}' operation.
@@ -1334,6 +1527,46 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EOperation getMetadataService__GetFeatureAspect__EStructuralFeature_String();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService#getOperationMetadata(org.eclipse.emf.ecore.EOperation) <em>Get Operation Metadata</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Get Operation Metadata</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataService#getOperationMetadata(org.eclipse.emf.ecore.EOperation)
+	 * @generated
+	 */
+	EOperation getMetadataService__GetOperationMetadata__EOperation();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService#getOperationMetadataByURI(java.lang.String) <em>Get Operation Metadata By URI</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Get Operation Metadata By URI</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataService#getOperationMetadataByURI(java.lang.String)
+	 * @generated
+	 */
+	EOperation getMetadataService__GetOperationMetadataByURI__String();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService#getOperationMetadataFromClass(java.lang.String, org.eclipse.fennec.model.metadata.ClassMetadata) <em>Get Operation Metadata From Class</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Get Operation Metadata From Class</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataService#getOperationMetadataFromClass(java.lang.String, org.eclipse.fennec.model.metadata.ClassMetadata)
+	 * @generated
+	 */
+	EOperation getMetadataService__GetOperationMetadataFromClass__String_ClassMetadata();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService#getOperationAspect(org.eclipse.emf.ecore.EOperation, java.lang.String) <em>Get Operation Aspect</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Get Operation Aspect</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataService#getOperationAspect(org.eclipse.emf.ecore.EOperation, java.lang.String)
+	 * @generated
+	 */
+	EOperation getMetadataService__GetOperationAspect__EOperation_String();
 
 	/**
 	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService#getPackageProfile(org.eclipse.emf.ecore.EPackage, java.lang.String) <em>Get Package Profile</em>}' operation.
@@ -1606,6 +1839,16 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	EOperation getAspectProvider__BuildReferenceAspect__ReferenceMetadata();
 
 	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.AspectProvider#buildOperationAspect(org.eclipse.fennec.model.metadata.OperationMetadata) <em>Build Operation Aspect</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Build Operation Aspect</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.AspectProvider#buildOperationAspect(org.eclipse.fennec.model.metadata.OperationMetadata)
+	 * @generated
+	 */
+	EOperation getAspectProvider__BuildOperationAspect__OperationMetadata();
+
+	/**
 	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.AspectProvider#buildProfiles(org.eclipse.fennec.model.metadata.PackageMetadata) <em>Build Profiles</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1713,6 +1956,22 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 		EOperation METADATA_INDEX_READER___FIND_FEATURES_BY_ANNOTATION__STRING_STRING_STRING = eINSTANCE.getMetadataIndexReader__FindFeaturesByAnnotation__String_String_String();
 
 		/**
+		 * The meta object literal for the '<em><b>Find Operation By URI</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_INDEX_READER___FIND_OPERATION_BY_URI__STRING = eINSTANCE.getMetadataIndexReader__FindOperationByURI__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Find Operations By Annotation</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_INDEX_READER___FIND_OPERATIONS_BY_ANNOTATION__STRING_STRING_STRING = eINSTANCE.getMetadataIndexReader__FindOperationsByAnnotation__String_String_String();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.model.metadata.api.MetadataIndexWriter <em>Metadata Index Writer</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1747,6 +2006,14 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 		EOperation METADATA_INDEX_WRITER___INDEX_FEATURE__FEATUREMETADATA = eINSTANCE.getMetadataIndexWriter__IndexFeature__FeatureMetadata();
 
 		/**
+		 * The meta object literal for the '<em><b>Index Operation</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_INDEX_WRITER___INDEX_OPERATION__OPERATIONMETADATA = eINSTANCE.getMetadataIndexWriter__IndexOperation__OperationMetadata();
+
+		/**
 		 * The meta object literal for the '<em><b>Remove Package</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1769,6 +2036,14 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EOperation METADATA_INDEX_WRITER___REMOVE_FEATURE__FEATUREMETADATA = eINSTANCE.getMetadataIndexWriter__RemoveFeature__FeatureMetadata();
+
+		/**
+		 * The meta object literal for the '<em><b>Remove Operation</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_INDEX_WRITER___REMOVE_OPERATION__OPERATIONMETADATA = eINSTANCE.getMetadataIndexWriter__RemoveOperation__OperationMetadata();
 
 		/**
 		 * The meta object literal for the '<em><b>Clear</b></em>' operation.
@@ -1893,6 +2168,38 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EOperation METADATA_SERVICE___GET_FEATURE_ASPECT__ESTRUCTURALFEATURE_STRING = eINSTANCE.getMetadataService__GetFeatureAspect__EStructuralFeature_String();
+
+		/**
+		 * The meta object literal for the '<em><b>Get Operation Metadata</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_SERVICE___GET_OPERATION_METADATA__EOPERATION = eINSTANCE.getMetadataService__GetOperationMetadata__EOperation();
+
+		/**
+		 * The meta object literal for the '<em><b>Get Operation Metadata By URI</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_SERVICE___GET_OPERATION_METADATA_BY_URI__STRING = eINSTANCE.getMetadataService__GetOperationMetadataByURI__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Get Operation Metadata From Class</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_SERVICE___GET_OPERATION_METADATA_FROM_CLASS__STRING_CLASSMETADATA = eINSTANCE.getMetadataService__GetOperationMetadataFromClass__String_ClassMetadata();
+
+		/**
+		 * The meta object literal for the '<em><b>Get Operation Aspect</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_SERVICE___GET_OPERATION_ASPECT__EOPERATION_STRING = eINSTANCE.getMetadataService__GetOperationAspect__EOperation_String();
 
 		/**
 		 * The meta object literal for the '<em><b>Get Package Profile</b></em>' operation.
@@ -2115,6 +2422,14 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EOperation ASPECT_PROVIDER___BUILD_REFERENCE_ASPECT__REFERENCEMETADATA = eINSTANCE.getAspectProvider__BuildReferenceAspect__ReferenceMetadata();
+
+		/**
+		 * The meta object literal for the '<em><b>Build Operation Aspect</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ASPECT_PROVIDER___BUILD_OPERATION_ASPECT__OPERATIONMETADATA = eINSTANCE.getAspectProvider__BuildOperationAspect__OperationMetadata();
 
 		/**
 		 * The meta object literal for the '<em><b>Build Profiles</b></em>' operation.

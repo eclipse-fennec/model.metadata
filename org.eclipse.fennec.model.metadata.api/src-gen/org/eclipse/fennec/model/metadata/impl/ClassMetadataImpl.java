@@ -37,6 +37,7 @@ import org.eclipse.fennec.model.metadata.ClassMetadata;
 import org.eclipse.fennec.model.metadata.FeatureMetadata;
 import org.eclipse.fennec.model.metadata.MetadataDiagnostic;
 import org.eclipse.fennec.model.metadata.MetadataPackage;
+import org.eclipse.fennec.model.metadata.OperationMetadata;
 import org.eclipse.fennec.model.metadata.PackageMetadata;
 
 /**
@@ -55,6 +56,7 @@ import org.eclipse.fennec.model.metadata.PackageMetadata;
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.ClassMetadataImpl#getClassifierID <em>Classifier ID</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.ClassMetadataImpl#getTypeURI <em>Type URI</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.ClassMetadataImpl#getFeatures <em>Features</em>}</li>
+ *   <li>{@link org.eclipse.fennec.model.metadata.impl.ClassMetadataImpl#getOperations <em>Operations</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.ClassMetadataImpl#getSuperTypes <em>Super Types</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.ClassMetadataImpl#getAllSuperTypes <em>All Super Types</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.ClassMetadataImpl#getIdFeatures <em>Id Features</em>}</li>
@@ -154,6 +156,16 @@ public class ClassMetadataImpl extends MinimalEObjectImpl.Container implements C
 	 * @ordered
 	 */
 	protected EList<FeatureMetadata> features;
+
+	/**
+	 * The cached value of the '{@link #getOperations() <em>Operations</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getOperations()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<OperationMetadata> operations;
 
 	/**
 	 * The cached value of the '{@link #getSuperTypes() <em>Super Types</em>}' reference list.
@@ -440,6 +452,19 @@ public class ClassMetadataImpl extends MinimalEObjectImpl.Container implements C
 	 * @generated
 	 */
 	@Override
+	public EList<OperationMetadata> getOperations() {
+		if (operations == null) {
+			operations = new EObjectContainmentWithInverseEList<OperationMetadata>(OperationMetadata.class, this, MetadataPackage.CLASS_METADATA__OPERATIONS, MetadataPackage.OPERATION_METADATA__CLASS_METADATA);
+		}
+		return operations;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EList<ClassMetadata> getSuperTypes() {
 		if (superTypes == null) {
 			superTypes = new EObjectResolvingEList<ClassMetadata>(ClassMetadata.class, this, MetadataPackage.CLASS_METADATA__SUPER_TYPES);
@@ -524,6 +549,8 @@ public class ClassMetadataImpl extends MinimalEObjectImpl.Container implements C
 				return basicSetPackage((PackageMetadata)otherEnd, msgs);
 			case MetadataPackage.CLASS_METADATA__FEATURES:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getFeatures()).basicAdd(otherEnd, msgs);
+			case MetadataPackage.CLASS_METADATA__OPERATIONS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getOperations()).basicAdd(otherEnd, msgs);
 			case MetadataPackage.CLASS_METADATA__ASPECTS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getAspects()).basicAdd(otherEnd, msgs);
 		}
@@ -544,6 +571,8 @@ public class ClassMetadataImpl extends MinimalEObjectImpl.Container implements C
 				return basicSetPackage(null, msgs);
 			case MetadataPackage.CLASS_METADATA__FEATURES:
 				return ((InternalEList<?>)getFeatures()).basicRemove(otherEnd, msgs);
+			case MetadataPackage.CLASS_METADATA__OPERATIONS:
+				return ((InternalEList<?>)getOperations()).basicRemove(otherEnd, msgs);
 			case MetadataPackage.CLASS_METADATA__ASPECTS:
 				return ((InternalEList<?>)getAspects()).basicRemove(otherEnd, msgs);
 		}
@@ -589,6 +618,8 @@ public class ClassMetadataImpl extends MinimalEObjectImpl.Container implements C
 				return getTypeURI();
 			case MetadataPackage.CLASS_METADATA__FEATURES:
 				return getFeatures();
+			case MetadataPackage.CLASS_METADATA__OPERATIONS:
+				return getOperations();
 			case MetadataPackage.CLASS_METADATA__SUPER_TYPES:
 				return getSuperTypes();
 			case MetadataPackage.CLASS_METADATA__ALL_SUPER_TYPES:
@@ -634,6 +665,10 @@ public class ClassMetadataImpl extends MinimalEObjectImpl.Container implements C
 			case MetadataPackage.CLASS_METADATA__FEATURES:
 				getFeatures().clear();
 				getFeatures().addAll((Collection<? extends FeatureMetadata>)newValue);
+				return;
+			case MetadataPackage.CLASS_METADATA__OPERATIONS:
+				getOperations().clear();
+				getOperations().addAll((Collection<? extends OperationMetadata>)newValue);
 				return;
 			case MetadataPackage.CLASS_METADATA__SUPER_TYPES:
 				getSuperTypes().clear();
@@ -687,6 +722,9 @@ public class ClassMetadataImpl extends MinimalEObjectImpl.Container implements C
 			case MetadataPackage.CLASS_METADATA__FEATURES:
 				getFeatures().clear();
 				return;
+			case MetadataPackage.CLASS_METADATA__OPERATIONS:
+				getOperations().clear();
+				return;
 			case MetadataPackage.CLASS_METADATA__SUPER_TYPES:
 				getSuperTypes().clear();
 				return;
@@ -730,6 +768,8 @@ public class ClassMetadataImpl extends MinimalEObjectImpl.Container implements C
 				return TYPE_URI_EDEFAULT == null ? typeURI != null : !TYPE_URI_EDEFAULT.equals(typeURI);
 			case MetadataPackage.CLASS_METADATA__FEATURES:
 				return features != null && !features.isEmpty();
+			case MetadataPackage.CLASS_METADATA__OPERATIONS:
+				return operations != null && !operations.isEmpty();
 			case MetadataPackage.CLASS_METADATA__SUPER_TYPES:
 				return superTypes != null && !superTypes.isEmpty();
 			case MetadataPackage.CLASS_METADATA__ALL_SUPER_TYPES:

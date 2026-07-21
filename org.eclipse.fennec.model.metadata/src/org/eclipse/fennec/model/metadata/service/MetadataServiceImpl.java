@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -23,7 +24,9 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -35,9 +38,12 @@ import org.eclipse.fennec.model.metadata.FeatureAspect;
 import org.eclipse.fennec.model.metadata.FeatureMetadata;
 import org.eclipse.fennec.model.metadata.MetadataFactory;
 import org.eclipse.fennec.model.metadata.MetadataRegistry;
+import org.eclipse.fennec.model.metadata.OperationAspect;
+import org.eclipse.fennec.model.metadata.OperationMetadata;
 import org.eclipse.fennec.model.metadata.PackageAspect;
 import org.eclipse.fennec.model.metadata.PackageMetadata;
 import org.eclipse.fennec.model.metadata.PackageProfile;
+import org.eclipse.fennec.model.metadata.ParameterMetadata;
 import org.eclipse.fennec.model.metadata.ReferenceMetadata;
 import org.eclipse.fennec.model.metadata.api.AspectProvider;
 import org.eclipse.fennec.model.metadata.api.MetadataHandler;
@@ -73,6 +79,14 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
     private final Map<String, PackageMetadata> packagesByNsURI = new ConcurrentHashMap<>();
     private final Map<EClass, ClassMetadata> classesByEClass = new ConcurrentHashMap<>();
     private final Map<EStructuralFeature, FeatureMetadata> featuresByEFeature = new ConcurrentHashMap<>();
+    private final Map<EOperation, OperationMetadata> operationsByEOperation = new ConcurrentHashMap<>();
+
+    // Guards the shared, non-thread-safe registry.getPackages() EList and the compound
+    // build/rebuild/attach sequences. Structural mutations (register/unregister of
+    // packages, providers, index, handlers) take the write lock; readers that iterate
+    // EMF aspect/profile lists take the read lock. Hot-path lookups go through the
+    // ConcurrentHashMaps above and stay lock-free.
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
      * Creates a new MetadataServiceImpl with an empty registry and default Map-based index.
@@ -158,6 +172,34 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
     }
 
     @Override
+    public OperationMetadata getOperationMetadata(EOperation operation) {
+        if (operation == null) {
+            return null;
+        }
+        return operationsByEOperation.get(operation);
+    }
+
+    @Override
+    public OperationMetadata getOperationMetadataByURI(String uri) {
+        MetadataIndex idx = this.index;
+        return idx != null ? idx.findOperationByURI(uri) : null;
+    }
+
+    @Override
+    public OperationMetadata getOperationMetadataFromClass(String operationName, ClassMetadata classMetadata) {
+        if (operationName == null || classMetadata == null) {
+            return null;
+        }
+        // Operation names are not unique when operations are overloaded; return the first match.
+        for (OperationMetadata operationMetadata : classMetadata.getOperations()) {
+            if (operationName.equals(operationMetadata.getName())) {
+                return operationMetadata;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public FeatureMetadata getFeatureMetadataByURI(String uri) {
         MetadataIndex idx = this.index;
         return idx != null ? idx.findFeatureByURI(uri) : null;
@@ -190,41 +232,74 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         if (ePackage == null) {
             return null;
         }
-        PackageMetadata pkgMetadata = packagesByNsURI.get(ePackage.getNsURI());
-        if (pkgMetadata != null) {
-            for (PackageAspect aspect : pkgMetadata.getAspects()) {
-                if (aspectTypeId.equals(aspect.getTypeId())) {
-                    return aspect;
+        lock.readLock().lock();
+        try {
+            PackageMetadata pkgMetadata = packagesByNsURI.get(ePackage.getNsURI());
+            if (pkgMetadata != null) {
+                for (PackageAspect aspect : pkgMetadata.getAspects()) {
+                    if (aspectTypeId.equals(aspect.getTypeId())) {
+                        return aspect;
+                    }
                 }
             }
+            return null;
+        } finally {
+            lock.readLock().unlock();
         }
-        return null;
     }
 
     @Override
     public ClassAspect getClassAspect(EClass eClass, String aspectTypeId) {
-        ClassMetadata classMetadata = getClassMetadata(eClass);
-        if (classMetadata != null) {
-            for (ClassAspect aspect : classMetadata.getAspects()) {
-                if (aspectTypeId.equals(aspect.getTypeId())) {
-                    return aspect;
+        lock.readLock().lock();
+        try {
+            ClassMetadata classMetadata = getClassMetadata(eClass);
+            if (classMetadata != null) {
+                for (ClassAspect aspect : classMetadata.getAspects()) {
+                    if (aspectTypeId.equals(aspect.getTypeId())) {
+                        return aspect;
+                    }
                 }
             }
+            return null;
+        } finally {
+            lock.readLock().unlock();
         }
-        return null;
     }
 
     @Override
     public FeatureAspect getFeatureAspect(EStructuralFeature feature, String aspectTypeId) {
-        FeatureMetadata featureMetadata = getFeatureMetadata(feature);
-        if (featureMetadata != null) {
-            for (FeatureAspect aspect : featureMetadata.getAspects()) {
-                if (aspectTypeId.equals(aspect.getTypeId())) {
-                    return aspect;
+        lock.readLock().lock();
+        try {
+            FeatureMetadata featureMetadata = getFeatureMetadata(feature);
+            if (featureMetadata != null) {
+                for (FeatureAspect aspect : featureMetadata.getAspects()) {
+                    if (aspectTypeId.equals(aspect.getTypeId())) {
+                        return aspect;
+                    }
                 }
             }
+            return null;
+        } finally {
+            lock.readLock().unlock();
         }
-        return null;
+    }
+
+    @Override
+    public OperationAspect getOperationAspect(EOperation operation, String aspectTypeId) {
+        lock.readLock().lock();
+        try {
+            OperationMetadata operationMetadata = getOperationMetadata(operation);
+            if (operationMetadata != null) {
+                for (OperationAspect aspect : operationMetadata.getAspects()) {
+                    if (aspectTypeId.equals(aspect.getTypeId())) {
+                        return aspect;
+                    }
+                }
+            }
+            return null;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     @Override
@@ -232,8 +307,13 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         if (ePackage == null || typeId == null) {
             return null;
         }
-        PackageMetadata pkgMetadata = packagesByNsURI.get(ePackage.getNsURI());
-        return findPackageProfile(pkgMetadata, typeId);
+        lock.readLock().lock();
+        try {
+            PackageMetadata pkgMetadata = packagesByNsURI.get(ePackage.getNsURI());
+            return findPackageProfile(pkgMetadata, typeId);
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     @Override
@@ -241,8 +321,13 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         if (nsURI == null || typeId == null) {
             return null;
         }
-        PackageMetadata pkgMetadata = packagesByNsURI.get(nsURI);
-        return findPackageProfile(pkgMetadata, typeId);
+        lock.readLock().lock();
+        try {
+            PackageMetadata pkgMetadata = packagesByNsURI.get(nsURI);
+            return findPackageProfile(pkgMetadata, typeId);
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     @Override
@@ -250,20 +335,25 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         if (eClass == null || typeId == null) {
             return null;
         }
-        ClassMetadata classMetadata = classesByEClass.get(eClass);
-        if (classMetadata == null) {
-            return null;
-        }
-        PackageMetadata pkgMetadata = classMetadata.getPackage();
-        PackageProfile pkgProfile = findPackageProfile(pkgMetadata, typeId);
-        if (pkgProfile != null) {
-            for (ClassProfile cp : pkgProfile.getClassProfiles()) {
-                if (eClass.equals(cp.getEClass())) {
-                    return cp;
+        lock.readLock().lock();
+        try {
+            ClassMetadata classMetadata = classesByEClass.get(eClass);
+            if (classMetadata == null) {
+                return null;
+            }
+            PackageMetadata pkgMetadata = classMetadata.getPackage();
+            PackageProfile pkgProfile = findPackageProfile(pkgMetadata, typeId);
+            if (pkgProfile != null) {
+                for (ClassProfile cp : pkgProfile.getClassProfiles()) {
+                    if (eClass.equals(cp.getEClass())) {
+                        return cp;
+                    }
                 }
             }
+            return null;
+        } finally {
+            lock.readLock().unlock();
         }
-        return null;
     }
 
     @Override
@@ -271,22 +361,27 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         if (eClassURI == null || typeId == null) {
             return null;
         }
-        MetadataIndex idx = this.index;
-        ClassMetadata classMetadata = idx != null ? idx.findClassByURI(eClassURI) : null;
-        if (classMetadata == null) {
-            return null;
-        }
-        PackageMetadata pkgMetadata = classMetadata.getPackage();
-        PackageProfile pkgProfile = findPackageProfile(pkgMetadata, typeId);
-        if (pkgProfile != null) {
-            EClass eClass = classMetadata.getEClass();
-            for (ClassProfile cp : pkgProfile.getClassProfiles()) {
-                if (eClass.equals(cp.getEClass())) {
-                    return cp;
+        lock.readLock().lock();
+        try {
+            MetadataIndex idx = this.index;
+            ClassMetadata classMetadata = idx != null ? idx.findClassByURI(eClassURI) : null;
+            if (classMetadata == null) {
+                return null;
+            }
+            PackageMetadata pkgMetadata = classMetadata.getPackage();
+            PackageProfile pkgProfile = findPackageProfile(pkgMetadata, typeId);
+            if (pkgProfile != null) {
+                EClass eClass = classMetadata.getEClass();
+                for (ClassProfile cp : pkgProfile.getClassProfiles()) {
+                    if (eClass.equals(cp.getEClass())) {
+                        return cp;
+                    }
                 }
             }
+            return null;
+        } finally {
+            lock.readLock().unlock();
         }
-        return null;
     }
 
     @Override
@@ -306,56 +401,61 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
 
         String nsURI = ePackage.getNsURI();
 
-        // Check if already registered
-        PackageMetadata existing = packagesByNsURI.get(nsURI);
-        if (existing != null) {
-            return existing;
-        }
-
-        // Create package metadata
-        PackageMetadata pkgMetadata = MetadataFactory.eINSTANCE.createPackageMetadata();
-        pkgMetadata.setEPackage(ePackage);
-        pkgMetadata.setNsURI(nsURI);
-
-        // Apply all aspect providers to package
-        for (AspectProvider provider : aspectProviders) {
-            PackageAspect aspect = provider.buildPackageAspect(pkgMetadata);
-            if (aspect != null) {
-                aspect.setTypeId(provider.getAspectTypeId());
-                pkgMetadata.getAspects().add(aspect);
+        lock.writeLock().lock();
+        try {
+            // Check if already registered
+            PackageMetadata existing = packagesByNsURI.get(nsURI);
+            if (existing != null) {
+                return existing;
             }
-        }
 
-        // Process all EClasses
-        for (EClassifier classifier : ePackage.getEClassifiers()) {
-            if (classifier instanceof EClass eClass) {
-                ClassMetadata classMetadata = buildClassMetadata(eClass, pkgMetadata);
-                pkgMetadata.getClasses().add(classMetadata);
+            // Create package metadata
+            PackageMetadata pkgMetadata = MetadataFactory.eINSTANCE.createPackageMetadata();
+            pkgMetadata.setEPackage(ePackage);
+            pkgMetadata.setNsURI(nsURI);
+
+            // Apply all aspect providers to package
+            for (AspectProvider provider : aspectProviders) {
+                PackageAspect aspect = provider.buildPackageAspect(pkgMetadata);
+                if (aspect != null) {
+                    aspect.setTypeId(provider.getAspectTypeId());
+                    pkgMetadata.getAspects().add(aspect);
+                }
             }
+
+            // Process all EClasses
+            for (EClassifier classifier : ePackage.getEClassifiers()) {
+                if (classifier instanceof EClass eClass) {
+                    ClassMetadata classMetadata = buildClassMetadata(eClass, pkgMetadata);
+                    pkgMetadata.getClasses().add(classMetadata);
+                }
+            }
+
+            // Resolve cross-references (supertypes, target classes)
+            resolveReferences(pkgMetadata);
+
+            // Build profiles for each provider
+            buildProfilesForAllProviders(pkgMetadata);
+
+            // Add to registry and lookup maps
+            registry.getPackages().add(pkgMetadata);
+            packagesByNsURI.put(nsURI, pkgMetadata);
+
+            // Index the package
+            MetadataIndex idx = this.index;
+            if (idx != null) {
+                idx.indexPackage(pkgMetadata);
+            }
+
+            // Notify metadata handlers
+            for (MetadataHandler handler : metadataHandlers) {
+                handler.onPackageRegistered(pkgMetadata);
+            }
+
+            return pkgMetadata;
+        } finally {
+            lock.writeLock().unlock();
         }
-
-        // Resolve cross-references (supertypes, target classes)
-        resolveReferences(pkgMetadata);
-
-        // Build profiles for each provider
-        buildProfilesForAllProviders(pkgMetadata);
-
-        // Add to registry and lookup maps
-        registry.getPackages().add(pkgMetadata);
-        packagesByNsURI.put(nsURI, pkgMetadata);
-
-        // Index the package
-        MetadataIndex idx = this.index;
-        if (idx != null) {
-            idx.indexPackage(pkgMetadata);
-        }
-
-        // Notify metadata handlers
-        for (MetadataHandler handler : metadataHandlers) {
-            handler.onPackageRegistered(pkgMetadata);
-        }
-
-        return pkgMetadata;
     }
 
     @Override
@@ -365,58 +465,83 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         }
 
         String nsURI = ePackage.getNsURI();
-        PackageMetadata pkgMetadata = packagesByNsURI.get(nsURI);
 
-        if (pkgMetadata != null) {
-            // Notify metadata handlers before removing
-            for (MetadataHandler handler : metadataHandlers) {
-                handler.onPackageUnregistered(pkgMetadata);
-            }
+        lock.writeLock().lock();
+        try {
+            PackageMetadata pkgMetadata = packagesByNsURI.get(nsURI);
 
-            packagesByNsURI.remove(nsURI);
-
-            // Remove from index first
-            MetadataIndex idx = this.index;
-            if (idx != null) {
-                idx.removePackage(pkgMetadata);
-            }
-
-            // Remove from lookup maps
-            for (ClassMetadata classMetadata : pkgMetadata.getClasses()) {
-                EClass eClass = classMetadata.getEClass();
-                if (eClass != null) {
-                    classesByEClass.remove(eClass);
+            if (pkgMetadata != null) {
+                // Notify metadata handlers before removing
+                for (MetadataHandler handler : metadataHandlers) {
+                    handler.onPackageUnregistered(pkgMetadata);
                 }
 
-                for (FeatureMetadata featureMetadata : classMetadata.getFeatures()) {
-                    EStructuralFeature feature = featureMetadata.getEFeature();
-                    if (feature != null) {
-                        featuresByEFeature.remove(feature);
+                packagesByNsURI.remove(nsURI);
+
+                // Remove from index first
+                MetadataIndex idx = this.index;
+                if (idx != null) {
+                    idx.removePackage(pkgMetadata);
+                }
+
+                // Remove from lookup maps
+                for (ClassMetadata classMetadata : pkgMetadata.getClasses()) {
+                    EClass eClass = classMetadata.getEClass();
+                    if (eClass != null) {
+                        classesByEClass.remove(eClass);
+                    }
+
+                    for (FeatureMetadata featureMetadata : classMetadata.getFeatures()) {
+                        EStructuralFeature feature = featureMetadata.getEFeature();
+                        if (feature != null) {
+                            featuresByEFeature.remove(feature);
+                        }
+                    }
+
+                    for (OperationMetadata operationMetadata : classMetadata.getOperations()) {
+                        EOperation operation = operationMetadata.getEOperation();
+                        if (operation != null) {
+                            operationsByEOperation.remove(operation);
+                        }
                     }
                 }
-            }
 
-            // Remove from registry
-            registry.getPackages().remove(pkgMetadata);
+                // Remove from registry
+                registry.getPackages().remove(pkgMetadata);
+            }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
     @Override
     public void registerAspectProvider(AspectProvider provider) {
-        if (provider != null && !aspectProviders.contains(provider)) {
-            aspectProviders.add(provider);
+        if (provider == null) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
+            if (!aspectProviders.contains(provider)) {
+                aspectProviders.add(provider);
 
-            // Apply provider to all existing metadata and build profiles
-            for (PackageMetadata pkgMetadata : registry.getPackages()) {
-                applyProviderToPackage(provider, pkgMetadata);
-                buildProfilesForProvider(provider, pkgMetadata);
+                // Apply provider to all existing metadata and build profiles
+                for (PackageMetadata pkgMetadata : registry.getPackages()) {
+                    applyProviderToPackage(provider, pkgMetadata);
+                    buildProfilesForProvider(provider, pkgMetadata);
+                }
             }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
     @Override
     public void unregisterAspectProvider(AspectProvider provider) {
-        if (provider != null) {
+        if (provider == null) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
             aspectProviders.remove(provider);
 
             // Remove aspects and profiles from this provider
@@ -425,6 +550,8 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
                 removeAspectsFromPackage(typeId, pkgMetadata);
                 removeProfileFromPackage(typeId, pkgMetadata);
             }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -440,40 +567,64 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
 
     @Override
     public void setMetadataIndex(MetadataIndex index) {
-        this.index = index;
-        if (index != null) {
-            // Populate the new index with all existing metadata
-            for (PackageMetadata pkgMetadata : registry.getPackages()) {
-                index.indexPackage(pkgMetadata);
+        lock.writeLock().lock();
+        try {
+            this.index = index;
+            if (index != null) {
+                // Populate the new index with all existing metadata
+                for (PackageMetadata pkgMetadata : registry.getPackages()) {
+                    index.indexPackage(pkgMetadata);
+                }
             }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
     @Override
     public void unsetMetadataIndex(MetadataIndex index) {
-        if (index != null && index == this.index) {
-            index.clear();
-            this.index = null;
+        lock.writeLock().lock();
+        try {
+            if (index != null && index == this.index) {
+                index.clear();
+                this.index = null;
+            }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
     @Override
     public void addMetadataHandler(MetadataHandler handler) {
-        if (handler != null && !metadataHandlers.contains(handler)) {
-            metadataHandlers.add(handler);
+        if (handler == null) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
+            if (!metadataHandlers.contains(handler)) {
+                metadataHandlers.add(handler);
 
-            // Late binding: notify handler about all existing packages
-            for (PackageMetadata pkgMetadata : registry.getPackages()) {
-                handler.onPackageRegistered(pkgMetadata);
+                // Late binding: notify handler about all existing packages
+                for (PackageMetadata pkgMetadata : registry.getPackages()) {
+                    handler.onPackageRegistered(pkgMetadata);
+                }
             }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
     @Override
     public void removeMetadataHandler(MetadataHandler handler) {
-        if (handler != null) {
+        if (handler == null) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
             metadataHandlers.remove(handler);
             handler.clear();
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -501,6 +652,12 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
             if (feature instanceof EAttribute attr && attr.isID()) {
                 classMetadata.getIdFeatures().add(featureMetadata);
             }
+        }
+
+        // Process operations (before class aspects — providers may need operation metadata)
+        for (EOperation operation : eClass.getEOperations()) {
+            OperationMetadata operationMetadata = buildOperationMetadata(operation, classMetadata);
+            classMetadata.getOperations().add(operationMetadata);
         }
 
         // Add to EClass lookup map
@@ -567,6 +724,35 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         return featureMetadata;
     }
 
+    private OperationMetadata buildOperationMetadata(EOperation operation, ClassMetadata classMetadata) {
+        OperationMetadata operationMetadata = MetadataFactory.eINSTANCE.createOperationMetadata();
+        operationMetadata.setEOperation(operation);
+        operationMetadata.setName(operation.getName());
+        operationMetadata.setOperationID(operation.getOperationID());
+
+        // Build parameter metadata (types resolved later in resolveReferences)
+        for (EParameter parameter : operation.getEParameters()) {
+            ParameterMetadata parameterMetadata = MetadataFactory.eINSTANCE.createParameterMetadata();
+            parameterMetadata.setEParameter(parameter);
+            parameterMetadata.setName(parameter.getName());
+            operationMetadata.getParameters().add(parameterMetadata);
+        }
+
+        // Add to EOperation lookup map
+        operationsByEOperation.put(operation, operationMetadata);
+
+        // Apply all aspect providers
+        for (AspectProvider provider : aspectProviders) {
+            OperationAspect aspect = provider.buildOperationAspect(operationMetadata);
+            if (aspect != null) {
+                aspect.setTypeId(provider.getAspectTypeId());
+                operationMetadata.getAspects().add(aspect);
+            }
+        }
+
+        return operationMetadata;
+    }
+
     private void resolveReferences(PackageMetadata pkgMetadata) {
         for (ClassMetadata classMetadata : pkgMetadata.getClasses()) {
             EClass eClass = classMetadata.getEClass();
@@ -604,6 +790,23 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
                         if (oppositeMetadata instanceof ReferenceMetadata oppRefMetadata) {
                             refMetadata.setOppositeMetadata(oppRefMetadata);
                         }
+                    }
+                }
+            }
+
+            // Resolve operation return-type and parameter-type metadata (only when the
+            // type is an EClass in a registered package; null otherwise, e.g. void /
+            // EDataType returns or parameters).
+            for (OperationMetadata operationMetadata : classMetadata.getOperations()) {
+                EClassifier returnType = operationMetadata.getEOperation().getEType();
+                if (returnType instanceof EClass returnClass) {
+                    operationMetadata.setReturnTypeMetadata(classesByEClass.get(returnClass));
+                }
+
+                for (ParameterMetadata parameterMetadata : operationMetadata.getParameters()) {
+                    EClassifier paramType = parameterMetadata.getEParameter().getEType();
+                    if (paramType instanceof EClass paramClass) {
+                        parameterMetadata.setTypeMetadata(classesByEClass.get(paramClass));
                     }
                 }
             }
@@ -648,6 +851,9 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
             for (FeatureMetadata featureMetadata : classMetadata.getFeatures()) {
                 featureMetadata.getAspects().removeIf(a -> !typeId.equals(a.getTypeId()));
             }
+            for (OperationMetadata operationMetadata : classMetadata.getOperations()) {
+                operationMetadata.getAspects().removeIf(a -> !typeId.equals(a.getTypeId()));
+            }
         }
     }
 
@@ -678,6 +884,15 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
                 }
             }
 
+            // Build operation aspects
+            for (OperationMetadata operationMetadata : classMetadata.getOperations()) {
+                OperationAspect operationAspect = provider.buildOperationAspect(operationMetadata);
+                if (operationAspect != null) {
+                    operationAspect.setTypeId(provider.getAspectTypeId());
+                    operationMetadata.getAspects().add(operationAspect);
+                }
+            }
+
             // Build class aspect (after features)
             ClassAspect classAspect = provider.buildClassAspect(classMetadata);
             if (classAspect != null) {
@@ -696,6 +911,10 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
 
             for (FeatureMetadata featureMetadata : classMetadata.getFeatures()) {
                 featureMetadata.getAspects().removeIf(a -> typeId.equals(a.getTypeId()));
+            }
+
+            for (OperationMetadata operationMetadata : classMetadata.getOperations()) {
+                operationMetadata.getAspects().removeIf(a -> typeId.equals(a.getTypeId()));
             }
         }
     }
@@ -720,6 +939,7 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         packagesByNsURI.clear();
         classesByEClass.clear();
         featuresByEFeature.clear();
+        operationsByEOperation.clear();
         MetadataIndex idx = this.index;
         if (idx != null) {
             idx.clear();
@@ -738,6 +958,13 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
                     EStructuralFeature feature = featureMetadata.getEFeature();
                     if (feature != null) {
                         featuresByEFeature.put(feature, featureMetadata);
+                    }
+                }
+
+                for (OperationMetadata operationMetadata : classMetadata.getOperations()) {
+                    EOperation operation = operationMetadata.getEOperation();
+                    if (operation != null) {
+                        operationsByEOperation.put(operation, operationMetadata);
                     }
                 }
             }

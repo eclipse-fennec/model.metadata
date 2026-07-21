@@ -13,6 +13,7 @@
 package org.eclipse.fennec.model.metadata.api;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -22,6 +23,8 @@ import org.eclipse.fennec.model.metadata.ClassProfile;
 import org.eclipse.fennec.model.metadata.FeatureAspect;
 import org.eclipse.fennec.model.metadata.FeatureMetadata;
 import org.eclipse.fennec.model.metadata.MetadataRegistry;
+import org.eclipse.fennec.model.metadata.OperationAspect;
+import org.eclipse.fennec.model.metadata.OperationMetadata;
 import org.eclipse.fennec.model.metadata.PackageAspect;
 import org.eclipse.fennec.model.metadata.PackageMetadata;
 import org.eclipse.fennec.model.metadata.PackageProfile;
@@ -175,6 +178,50 @@ public interface MetadataService {
 	 * @generated
 	 */
 	FeatureAspect getFeatureAspect(EStructuralFeature feature, String aspectTypeId);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Get metadata for an EOperation. The operation's owning EClass's EPackage must have been registered. Returns null if not found.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	OperationMetadata getOperationMetadata(EOperation operation);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Get metadata for an EOperation by its full EMF URI (e.g., 'http://example.org/model#//Person/greet'). Returns null if not found.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	OperationMetadata getOperationMetadataByURI(String uri);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Get metadata for an EOperation by operation name and owning ClassMetadata. More efficient than a global lookup when ClassMetadata is already known. Returns the first operation with the given name (name is not unique when operations are overloaded). Returns null if not found.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	OperationMetadata getOperationMetadataFromClass(String operationName, ClassMetadata classMetadata);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Get a specific aspect from an EOperation's metadata by aspect type ID (e.g., 'codec'). Returns null if the operation's class is not registered or has no aspect with the given type ID.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	OperationAspect getOperationAspect(EOperation operation, String aspectTypeId);
 
 	/**
 	 * <!-- begin-user-doc -->

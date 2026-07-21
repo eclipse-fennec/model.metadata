@@ -3,7 +3,7 @@
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  Data In Motion Consulting - initial implementation"
     modelDirectory="/org.eclipse.fennec.model.metadata/src" modelPluginID="org.eclipse.fennec.model.metadata"
     modelName="Metadata" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    importerID="org.eclipse.emf.importer.ecore" complianceLevel="21.0" copyrightFields="false"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="17.0" copyrightFields="false"
     operationReflection="true" importOrganizing="true" oSGiCompatible="true">
   <foreignModel>metadata.ecore</foreignModel>
   <genPackages prefix="Metadata" basePackage="org.eclipse.fennec.model" resource="XMI"
@@ -111,6 +111,9 @@
     <genClasses image="false" ecoreClass="metadata.ecore#//FeatureAspect">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference metadata.ecore#//FeatureAspect/featureMetadata"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="metadata.ecore#//OperationAspect">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference metadata.ecore#//OperationAspect/operationMetadata"/>
+    </genClasses>
     <genClasses image="false" ecoreClass="metadata.ecore#//PackageProfile">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute metadata.ecore#//PackageProfile/typeId"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference metadata.ecore#//PackageProfile/classProfiles"/>
@@ -132,6 +135,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute metadata.ecore#//ClassMetadata/classifierID"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute metadata.ecore#//ClassMetadata/typeURI"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference metadata.ecore#//ClassMetadata/features"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference metadata.ecore#//ClassMetadata/operations"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference metadata.ecore#//ClassMetadata/superTypes"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference metadata.ecore#//ClassMetadata/allSuperTypes"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference metadata.ecore#//ClassMetadata/idFeatures"/>
@@ -157,6 +161,21 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference metadata.ecore#//ReferenceMetadata/targetClassMetadata"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference metadata.ecore#//ReferenceMetadata/oppositeMetadata"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute metadata.ecore#//ReferenceMetadata/hasBidirectional"/>
+    </genClasses>
+    <genClasses ecoreClass="metadata.ecore#//OperationMetadata">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference metadata.ecore#//OperationMetadata/classMetadata"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference metadata.ecore#//OperationMetadata/eOperation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute metadata.ecore#//OperationMetadata/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute metadata.ecore#//OperationMetadata/operationID"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference metadata.ecore#//OperationMetadata/returnTypeMetadata"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference metadata.ecore#//OperationMetadata/parameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference metadata.ecore#//OperationMetadata/aspects"/>
+    </genClasses>
+    <genClasses ecoreClass="metadata.ecore#//ParameterMetadata">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference metadata.ecore#//ParameterMetadata/operationMetadata"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference metadata.ecore#//ParameterMetadata/eParameter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute metadata.ecore#//ParameterMetadata/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference metadata.ecore#//ParameterMetadata/typeMetadata"/>
     </genClasses>
     <genClasses ecoreClass="metadata.ecore#//MetadataRegistry">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference metadata.ecore#//MetadataRegistry/packages"/>

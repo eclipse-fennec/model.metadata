@@ -71,6 +71,20 @@
       <eParameters name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eParameters name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
+    <eOperations name="findOperationByURI" eType="ecore:EClass metadata.ecore#//OperationMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Find OperationMetadata by its full EMF URI (e.g., 'http://example.org/model#//Person/greet')."/>
+      </eAnnotations>
+      <eParameters name="uri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="findOperationsByAnnotation" upperBound="-1" eType="ecore:EClass metadata.ecore#//OperationMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Find all OperationMetadata where the EOperation has an EAnnotation with the given source, key, and value. Pass null for value to match any value for the given key. Useful e.g. for locating OCL constraints attached to operations."/>
+      </eAnnotations>
+      <eParameters name="annotationSource" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MetadataIndexWriter" abstract="true"
       interface="true">
@@ -79,13 +93,13 @@
     </eAnnotations>
     <eOperations name="indexPackage">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Index a PackageMetadata and all its contained ClassMetadata and FeatureMetadata. Called by MetadataService after registerPackage completes."/>
+        <details key="documentation" value="Index a PackageMetadata and all its contained ClassMetadata, FeatureMetadata and OperationMetadata. Called by MetadataService after registerPackage completes."/>
       </eAnnotations>
       <eParameters name="packageMetadata" eType="ecore:EClass metadata.ecore#//PackageMetadata"/>
     </eOperations>
     <eOperations name="indexClass">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Index a single ClassMetadata and all its contained FeatureMetadata."/>
+        <details key="documentation" value="Index a single ClassMetadata and all its contained FeatureMetadata and OperationMetadata."/>
       </eAnnotations>
       <eParameters name="classMetadata" eType="ecore:EClass metadata.ecore#//ClassMetadata"/>
     </eOperations>
@@ -95,6 +109,12 @@
       </eAnnotations>
       <eParameters name="featureMetadata" eType="ecore:EClass metadata.ecore#//FeatureMetadata"/>
     </eOperations>
+    <eOperations name="indexOperation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Index a single OperationMetadata."/>
+      </eAnnotations>
+      <eParameters name="operationMetadata" eType="ecore:EClass metadata.ecore#//OperationMetadata"/>
+    </eOperations>
     <eOperations name="removePackage">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Remove a PackageMetadata and all its contained metadata from the index. Called by MetadataService during unregisterPackage."/>
@@ -103,7 +123,7 @@
     </eOperations>
     <eOperations name="removeClass">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Remove a ClassMetadata and all its contained FeatureMetadata from the index."/>
+        <details key="documentation" value="Remove a ClassMetadata and all its contained FeatureMetadata and OperationMetadata from the index."/>
       </eAnnotations>
       <eParameters name="classMetadata" eType="ecore:EClass metadata.ecore#//ClassMetadata"/>
     </eOperations>
@@ -112,6 +132,12 @@
         <details key="documentation" value="Remove a FeatureMetadata from the index."/>
       </eAnnotations>
       <eParameters name="featureMetadata" eType="ecore:EClass metadata.ecore#//FeatureMetadata"/>
+    </eOperations>
+    <eOperations name="removeOperation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Remove an OperationMetadata from the index."/>
+      </eAnnotations>
+      <eParameters name="operationMetadata" eType="ecore:EClass metadata.ecore#//OperationMetadata"/>
     </eOperations>
     <eOperations name="clear">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -210,6 +236,32 @@
         <details key="documentation" value="Get a specific aspect from an EStructuralFeature's metadata by aspect type ID (e.g., 'codec'). Returns null if the feature's class is not registered or has no aspect with the given type ID."/>
       </eAnnotations>
       <eParameters name="feature" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
+      <eParameters name="aspectTypeId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getOperationMetadata" eType="ecore:EClass metadata.ecore#//OperationMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get metadata for an EOperation. The operation's owning EClass's EPackage must have been registered. Returns null if not found."/>
+      </eAnnotations>
+      <eParameters name="operation" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EOperation"/>
+    </eOperations>
+    <eOperations name="getOperationMetadataByURI" eType="ecore:EClass metadata.ecore#//OperationMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get metadata for an EOperation by its full EMF URI (e.g., 'http://example.org/model#//Person/greet'). Returns null if not found."/>
+      </eAnnotations>
+      <eParameters name="uri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getOperationMetadataFromClass" eType="ecore:EClass metadata.ecore#//OperationMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get metadata for an EOperation by operation name and owning ClassMetadata. More efficient than a global lookup when ClassMetadata is already known. Returns the first operation with the given name (name is not unique when operations are overloaded). Returns null if not found."/>
+      </eAnnotations>
+      <eParameters name="operationName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="classMetadata" eType="ecore:EClass metadata.ecore#//ClassMetadata"/>
+    </eOperations>
+    <eOperations name="getOperationAspect" eType="ecore:EClass metadata.ecore#//OperationAspect">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get a specific aspect from an EOperation's metadata by aspect type ID (e.g., 'codec'). Returns null if the operation's class is not registered or has no aspect with the given type ID."/>
+      </eAnnotations>
+      <eParameters name="operation" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EOperation"/>
       <eParameters name="aspectTypeId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <!-- Profile access (NEW — Option F) -->
@@ -380,6 +432,13 @@
         <details key="documentation" value="Build a FeatureAspect for a ReferenceMetadata. Override for reference-specific logic. The metadata provides access to the EReference via referenceMetadata.getEReference(), target class via referenceMetadata.getTargetClassMetadata(), and owning class via referenceMetadata.getClassMetadata(). Returns null to fall back to buildFeatureAspect."/>
       </eAnnotations>
       <eParameters name="referenceMetadata" eType="ecore:EClass metadata.ecore#//ReferenceMetadata"/>
+    </eOperations>
+    <eOperations name="buildOperationAspect" eType="ecore:EClass metadata.ecore#//OperationAspect">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Build an OperationAspect for the given OperationMetadata. Called once per EOperation during registration. The metadata provides access to the EOperation via operationMetadata.getEOperation(), to the owning class via operationMetadata.getClassMetadata(), and to parameters via operationMetadata.getParameters(). Returns null if this provider does not contribute operation-level aspects."/>
+        <details key="body" value="return null;"/>
+      </eAnnotations>
+      <eParameters name="operationMetadata" eType="ecore:EClass metadata.ecore#//OperationMetadata"/>
     </eOperations>
     <!-- Profile building — called after all metadata and aspects are constructed -->
     <eOperations name="buildProfiles" eType="ecore:EClass metadata.ecore#//PackageProfile">

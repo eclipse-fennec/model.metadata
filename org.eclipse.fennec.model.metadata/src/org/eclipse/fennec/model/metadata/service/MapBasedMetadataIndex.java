@@ -21,9 +21,11 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.fennec.model.metadata.ClassMetadata;
 import org.eclipse.fennec.model.metadata.FeatureMetadata;
+import org.eclipse.fennec.model.metadata.OperationMetadata;
 import org.eclipse.fennec.model.metadata.PackageMetadata;
 import org.eclipse.fennec.model.metadata.api.MetadataIndex;
 
@@ -49,6 +51,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
     // Primary indexes
     private final Map<String, ClassMetadata> classesByURI = new ConcurrentHashMap<>();
     private final Map<String, FeatureMetadata> featuresByURI = new ConcurrentHashMap<>();
+    private final Map<String, OperationMetadata> operationsByURI = new ConcurrentHashMap<>();
 
     // Composite key indexes: "nsURI::name" -> ClassMetadata
     private final Map<String, ClassMetadata> classesByNsURIAndName = new ConcurrentHashMap<>();
@@ -115,6 +118,11 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         for (FeatureMetadata featureMetadata : classMetadata.getFeatures()) {
             indexFeature(featureMetadata);
         }
+
+        // Index all operations
+        for (OperationMetadata operationMetadata : classMetadata.getOperations()) {
+            indexOperation(operationMetadata);
+        }
     }
 
     @Override
@@ -126,6 +134,18 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         if (eFeature != null) {
             String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eFeature).toString();
             featuresByURI.put(uri, featureMetadata);
+        }
+    }
+
+    @Override
+    public void indexOperation(OperationMetadata operationMetadata) {
+        if (operationMetadata == null) {
+            return;
+        }
+        EOperation eOperation = operationMetadata.getEOperation();
+        if (eOperation != null) {
+            String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eOperation).toString();
+            operationsByURI.put(uri, operationMetadata);
         }
     }
 
@@ -194,6 +214,11 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         for (FeatureMetadata featureMetadata : classMetadata.getFeatures()) {
             removeFeature(featureMetadata);
         }
+
+        // Remove all operations
+        for (OperationMetadata operationMetadata : classMetadata.getOperations()) {
+            removeOperation(operationMetadata);
+        }
     }
 
     @Override
@@ -209,9 +234,22 @@ public class MapBasedMetadataIndex implements MetadataIndex {
     }
 
     @Override
+    public void removeOperation(OperationMetadata operationMetadata) {
+        if (operationMetadata == null) {
+            return;
+        }
+        EOperation eOperation = operationMetadata.getEOperation();
+        if (eOperation != null) {
+            String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eOperation).toString();
+            operationsByURI.remove(uri);
+        }
+    }
+
+    @Override
     public void clear() {
         classesByURI.clear();
         featuresByURI.clear();
+        operationsByURI.clear();
         classesByNsURIAndName.clear();
         classesByNsURIAndInstanceClassName.clear();
         classesByName.clear();
@@ -297,6 +335,29 @@ public class MapBasedMetadataIndex implements MetadataIndex {
             EStructuralFeature eFeature = featureMetadata.getEFeature();
             if (eFeature != null && hasAnnotation(eFeature.getEAnnotation(annotationSource), key, value)) {
                 results.add(featureMetadata);
+            }
+        }
+        return new BasicEList<>(results);
+    }
+
+    @Override
+    public OperationMetadata findOperationByURI(String uri) {
+        if (uri == null) {
+            return null;
+        }
+        return operationsByURI.get(uri);
+    }
+
+    @Override
+    public EList<OperationMetadata> findOperationsByAnnotation(String annotationSource, String key, String value) {
+        if (annotationSource == null || key == null) {
+            return new BasicEList<>();
+        }
+        List<OperationMetadata> results = new ArrayList<>();
+        for (OperationMetadata operationMetadata : operationsByURI.values()) {
+            EOperation eOperation = operationMetadata.getEOperation();
+            if (eOperation != null && hasAnnotation(eOperation.getEAnnotation(annotationSource), key, value)) {
+                results.add(operationMetadata);
             }
         }
         return new BasicEList<>(results);

@@ -22,12 +22,14 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.fennec.model.metadata.ClassMetadata;
 import org.eclipse.fennec.model.metadata.FeatureMetadata;
+import org.eclipse.fennec.model.metadata.OperationMetadata;
 import org.eclipse.fennec.model.metadata.api.MetadataIndex;
 import org.eclipse.fennec.model.metadata.api.MetadataWhiteboard;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,6 +58,7 @@ class MapBasedMetadataIndexTest {
     private EClass addressClass;
     private EAttribute nameAttr;
     private EReference addressRef;
+    private EOperation greetOp;
 
     // Test package 2 (for cross-package queries)
     private EPackage testPackage2;
@@ -98,6 +101,12 @@ class MapBasedMetadataIndexTest {
         addressRef.setEType(addressClass);
         addressRef.setContainment(true);
         personClass.getEStructuralFeatures().add(addressRef);
+
+        // Operation on Person: greet(String greeting) : EString
+        greetOp = EcoreFactory.eINSTANCE.createEOperation();
+        greetOp.setName("greet");
+        greetOp.setEType(EcorePackage.Literals.ESTRING);
+        personClass.getEOperations().add(greetOp);
     }
 
     private void createTestPackage2() {
@@ -521,6 +530,101 @@ class MapBasedMetadataIndexTest {
     }
 
     // ========================================================================
+    // Operation Query Tests
+    // ========================================================================
+
+    @Nested
+    @DisplayName("findOperationByURI(uri)")
+    class FindOperationByURI {
+
+        @Test
+        @DisplayName("should find operation by URI")
+        void testFindOperationByURI() {
+            service.registerPackage(testPackage1);
+
+            OperationMetadata greetMeta = service.getOperationMetadata(greetOp);
+            String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(greetOp).toString();
+
+            OperationMetadata found = service.getIndexReader().findOperationByURI(uri);
+
+            assertNotNull(found);
+            assertSame(greetMeta, found);
+        }
+
+        @Test
+        @DisplayName("should be reachable via MetadataService.getOperationMetadataByURI")
+        void testServiceGetOperationMetadataByURI() {
+            service.registerPackage(testPackage1);
+
+            String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(greetOp).toString();
+            OperationMetadata found = service.getOperationMetadataByURI(uri);
+
+            assertNotNull(found);
+            assertSame(service.getOperationMetadata(greetOp), found);
+        }
+
+        @Test
+        @DisplayName("should return null for non-existent / null URI")
+        void testFindOperationByURINotFound() {
+            service.registerPackage(testPackage1);
+
+            assertNull(service.getIndexReader().findOperationByURI("http://nonexistent.example.org#Person/greet"));
+            assertNull(service.getIndexReader().findOperationByURI(null));
+        }
+    }
+
+    @Nested
+    @DisplayName("findOperationsByAnnotation()")
+    class FindOperationsByAnnotation {
+
+        @Test
+        @DisplayName("should find operations by annotation key and value")
+        void testFindOperationsByAnnotation() {
+            // Simulate an OCL constraint annotation on the operation.
+            EAnnotation annotation = EcoreFactory.eINSTANCE.createEAnnotation();
+            annotation.setSource("http://www.eclipse.org/ocl");
+            annotation.getDetails().put("body", "self.name <> null");
+            greetOp.getEAnnotations().add(annotation);
+
+            service.registerPackage(testPackage1);
+
+            EList<OperationMetadata> found = service.getIndexReader()
+                .findOperationsByAnnotation("http://www.eclipse.org/ocl", "body", "self.name <> null");
+
+            assertEquals(1, found.size());
+            assertEquals("greet", found.get(0).getName());
+        }
+
+        @Test
+        @DisplayName("should match any value when value is null")
+        void testFindOperationsByAnnotationAnyValue() {
+            EAnnotation annotation = EcoreFactory.eINSTANCE.createEAnnotation();
+            annotation.setSource("http://www.eclipse.org/ocl");
+            annotation.getDetails().put("body", "true");
+            greetOp.getEAnnotations().add(annotation);
+
+            service.registerPackage(testPackage1);
+
+            EList<OperationMetadata> found = service.getIndexReader()
+                .findOperationsByAnnotation("http://www.eclipse.org/ocl", "body", null);
+
+            assertEquals(1, found.size());
+        }
+
+        @Test
+        @DisplayName("should return empty list for non-matching annotation")
+        void testFindOperationsByAnnotationNotFound() {
+            service.registerPackage(testPackage1);
+
+            EList<OperationMetadata> found = service.getIndexReader()
+                .findOperationsByAnnotation("http://nonexistent", "key", "value");
+
+            assertNotNull(found);
+            assertTrue(found.isEmpty());
+        }
+    }
+
+    // ========================================================================
     // Index Maintenance Tests
     // ========================================================================
 
@@ -587,6 +691,30 @@ class MapBasedMetadataIndexTest {
             assertTrue(service.getIndexReader().findAllByInstanceClassName("org.example.Person").isEmpty());
             assertTrue(service.getIndexReader().findAllByClassName("Person").isEmpty());
         }
+
+        @Test
+        @DisplayName("should remove operation from index when package is unregistered")
+        void testUnregisterPackageRemovesOperationFromIndex() {
+            service.registerPackage(testPackage1);
+            String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(greetOp).toString();
+            assertNotNull(service.getIndexReader().findOperationByURI(uri));
+
+            service.unregisterPackage(testPackage1);
+
+            assertNull(service.getIndexReader().findOperationByURI(uri));
+        }
+
+        @Test
+        @DisplayName("should clear the operation index")
+        void testClearRemovesOperations() {
+            service.registerPackage(testPackage1);
+            String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(greetOp).toString();
+            assertNotNull(service.getIndexReader().findOperationByURI(uri));
+
+            index.clear();
+
+            assertNull(service.getIndexReader().findOperationByURI(uri));
+        }
     }
 
     // ========================================================================
@@ -629,6 +757,18 @@ class MapBasedMetadataIndexTest {
 
             assertNotNull(found);
             assertEquals("name", found.getName());
+        }
+
+        @Test
+        @DisplayName("operations should be indexed when package is registered")
+        void testOperationsIndexedOnRegistration() {
+            service.registerPackage(testPackage1);
+
+            String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(greetOp).toString();
+            OperationMetadata found = service.getIndexReader().findOperationByURI(uri);
+
+            assertNotNull(found);
+            assertEquals("greet", found.getName());
         }
     }
 
