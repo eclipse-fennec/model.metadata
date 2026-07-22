@@ -516,6 +516,11 @@
         <details key="documentation" value="Cached namespace URI of the EPackage. Used for fast lookup without dereferencing the EPackage."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modelFingerprint" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Canonical fingerprint of the EPackage model version (see FingerprintService), computed locally at registration. Cached derived value: it is the join key that links derived artifacts to their source model version (e.g. for orphan housekeeping). Distinct from the artifact store/reuse key, which additionally folds in derivation inputs."/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="classes" upperBound="-1"
         eType="#//ClassMetadata" containment="true" eOpposite="#//ClassMetadata/package">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -532,6 +537,13 @@
         eType="#//PackageProfile" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Pre-computed profiles built by AspectProviders. One profile per provider (identified by typeId). Profiles contain the fully resolved annotation-layer configuration for all classes. Built after all metadata, aspects, and cross-references are complete."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EStringToStringMapEntry"
+        transient="true" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Transient, runtime-only build context: the OSGi service properties of the incoming EPackage service, captured at registration. Not serialized and not replicated (service properties are node-specific and volatile) - it lets AspectProviders decide relevance and read hints during build. Values are stringified."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

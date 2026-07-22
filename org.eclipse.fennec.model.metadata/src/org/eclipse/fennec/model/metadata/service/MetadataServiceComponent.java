@@ -12,6 +12,8 @@
  ********************************************************************/
 package org.eclipse.fennec.model.metadata.service;
 
+import java.util.Map;
+
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.fennec.model.metadata.api.AspectProvider;
 import org.eclipse.fennec.model.metadata.api.MetadataHandler;
@@ -72,8 +74,8 @@ public class MetadataServiceComponent extends MetadataServiceImpl {
             policy = ReferencePolicy.DYNAMIC,
             unbind = "removeEPackage"
     )
-    void addEPackage(EPackage ePackage) {
-        registerPackage(ePackage);
+    void addEPackage(EPackage ePackage, Map<String, Object> properties) {
+        registerPackage(ePackage, properties);
     }
 
     /**

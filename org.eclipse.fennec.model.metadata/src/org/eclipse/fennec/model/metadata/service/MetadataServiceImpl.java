@@ -46,6 +46,7 @@ import org.eclipse.fennec.model.metadata.PackageProfile;
 import org.eclipse.fennec.model.metadata.ParameterMetadata;
 import org.eclipse.fennec.model.metadata.ReferenceMetadata;
 import org.eclipse.fennec.model.metadata.api.AspectProvider;
+import org.eclipse.fennec.model.metadata.api.FingerprintService;
 import org.eclipse.fennec.model.metadata.api.MetadataHandler;
 import org.eclipse.fennec.model.metadata.api.MetadataIndex;
 import org.eclipse.fennec.model.metadata.api.MetadataIndexReader;
@@ -87,6 +88,10 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
     // EMF aspect/profile lists take the read lock. Hot-path lookups go through the
     // ConcurrentHashMaps above and stay lock-free.
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    // Computes the cached per-package modelFingerprint. Stateless and cheap; defaults to
+    // the built-in implementation and can be replaced (e.g. injected by the OSGi component).
+    private volatile FingerprintService fingerprintService = new DefaultFingerprintService();
 
     /**
      * Creates a new MetadataServiceImpl with an empty registry and default Map-based index.
@@ -395,6 +400,34 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
 
     @Override
     public PackageMetadata registerPackage(EPackage ePackage) {
+        return registerPackage(ePackage, null);
+    }
+
+    /**
+     * Sets the {@link FingerprintService} used to compute the cached per-package
+     * {@code modelFingerprint}. Defaults to the built-in implementation.
+     *
+     * @param fingerprintService the service to use (ignored if {@code null})
+     */
+    public void setFingerprintService(FingerprintService fingerprintService) {
+        if (fingerprintService != null) {
+            this.fingerprintService = fingerprintService;
+        }
+    }
+
+    /**
+     * Registers an EPackage, additionally taking the OSGi service properties of its
+     * EPackage service as transient build context. The properties are exposed to
+     * AspectProviders via {@link PackageMetadata#getProperties()} (stringified, never
+     * serialized) so providers can decide relevance; the model fingerprint is computed
+     * locally and cached on the PackageMetadata. Not part of the generated
+     * MetadataWhiteboard API.
+     *
+     * @param ePackage the package to register (may be {@code null})
+     * @param properties the EPackage service properties, or {@code null} if none
+     * @return the new or existing PackageMetadata, or {@code null} if {@code ePackage} is null
+     */
+    public PackageMetadata registerPackage(EPackage ePackage, Map<String, Object> properties) {
         if (ePackage == null) {
             return null;
         }
@@ -413,6 +446,22 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
             PackageMetadata pkgMetadata = MetadataFactory.eINSTANCE.createPackageMetadata();
             pkgMetadata.setEPackage(ePackage);
             pkgMetadata.setNsURI(nsURI);
+
+            // Local, reproducible model fingerprint = join key to the EPackage registry.
+            // An externally supplied fingerprint (if any) arrives among the service
+            // properties below; it is captured as build context but NOT trusted here —
+            // the local computation is authoritative.
+            pkgMetadata.setModelFingerprint(fingerprintService.fingerprint(ePackage));
+
+            // Transient build context: capture the EPackage service properties (stringified).
+            // Not serialized (the feature is transient) — providers use it for relevance.
+            if (properties != null) {
+                for (Map.Entry<String, Object> entry : properties.entrySet()) {
+                    if (entry.getKey() != null && entry.getValue() != null) {
+                        pkgMetadata.getProperties().put(entry.getKey(), stringifyProperty(entry.getValue()));
+                    }
+                }
+            }
 
             // Apply all aspect providers to package
             for (AspectProvider provider : aspectProviders) {
@@ -933,6 +982,14 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
             }
         }
         return null;
+    }
+
+    /** Stringifies an OSGi service-property value for the transient properties bag. */
+    private static String stringifyProperty(Object value) {
+        if (value instanceof Object[] array) {
+            return java.util.Arrays.toString(array);
+        }
+        return String.valueOf(value);
     }
 
     private void rebuildLookupMaps() {

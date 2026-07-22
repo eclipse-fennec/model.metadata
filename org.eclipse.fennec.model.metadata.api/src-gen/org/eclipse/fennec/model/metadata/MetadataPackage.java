@@ -1008,13 +1008,22 @@ public interface MetadataPackage extends org.eclipse.emf.ecore.EPackage {
 	int PACKAGE_METADATA__NS_URI = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Model Fingerprint</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACKAGE_METADATA__MODEL_FINGERPRINT = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 2;
+
+	/**
 	 * The feature id for the '<em><b>Classes</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PACKAGE_METADATA__CLASSES = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 2;
+	int PACKAGE_METADATA__CLASSES = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Aspects</b></em>' containment reference list.
@@ -1023,7 +1032,7 @@ public interface MetadataPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PACKAGE_METADATA__ASPECTS = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 3;
+	int PACKAGE_METADATA__ASPECTS = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Profiles</b></em>' containment reference list.
@@ -1032,7 +1041,16 @@ public interface MetadataPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PACKAGE_METADATA__PROFILES = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 4;
+	int PACKAGE_METADATA__PROFILES = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACKAGE_METADATA__PROPERTIES = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 6;
 
 	/**
 	 * The number of structural features of the '<em>Package Metadata</em>' class.
@@ -1041,7 +1059,7 @@ public interface MetadataPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PACKAGE_METADATA_FEATURE_COUNT = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 5;
+	int PACKAGE_METADATA_FEATURE_COUNT = DIAGNOSTIC_CONTAINER_FEATURE_COUNT + 7;
 
 	/**
 	 * The number of operations of the '<em>Package Metadata</em>' class.
@@ -2567,6 +2585,17 @@ public interface MetadataPackage extends org.eclipse.emf.ecore.EPackage {
 	EAttribute getPackageMetadata_NsURI();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.fennec.model.metadata.PackageMetadata#getModelFingerprint <em>Model Fingerprint</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Model Fingerprint</em>'.
+	 * @see org.eclipse.fennec.model.metadata.PackageMetadata#getModelFingerprint()
+	 * @see #getPackageMetadata()
+	 * @generated
+	 */
+	EAttribute getPackageMetadata_ModelFingerprint();
+
+	/**
 	 * Returns the meta object for the containment reference list '{@link org.eclipse.fennec.model.metadata.PackageMetadata#getClasses <em>Classes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2598,6 +2627,17 @@ public interface MetadataPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EReference getPackageMetadata_Profiles();
+
+	/**
+	 * Returns the meta object for the map '{@link org.eclipse.fennec.model.metadata.PackageMetadata#getProperties <em>Properties</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the map '<em>Properties</em>'.
+	 * @see org.eclipse.fennec.model.metadata.PackageMetadata#getProperties()
+	 * @see #getPackageMetadata()
+	 * @generated
+	 */
+	EReference getPackageMetadata_Properties();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.model.metadata.ClassMetadata <em>Class Metadata</em>}'.
@@ -3723,6 +3763,14 @@ public interface MetadataPackage extends org.eclipse.emf.ecore.EPackage {
 		EAttribute PACKAGE_METADATA__NS_URI = eINSTANCE.getPackageMetadata_NsURI();
 
 		/**
+		 * The meta object literal for the '<em><b>Model Fingerprint</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PACKAGE_METADATA__MODEL_FINGERPRINT = eINSTANCE.getPackageMetadata_ModelFingerprint();
+
+		/**
 		 * The meta object literal for the '<em><b>Classes</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3745,6 +3793,14 @@ public interface MetadataPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EReference PACKAGE_METADATA__PROFILES = eINSTANCE.getPackageMetadata_Profiles();
+
+		/**
+		 * The meta object literal for the '<em><b>Properties</b></em>' map feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PACKAGE_METADATA__PROPERTIES = eINSTANCE.getPackageMetadata_Properties();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.model.metadata.impl.ClassMetadataImpl <em>Class Metadata</em>}' class.

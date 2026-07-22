@@ -968,8 +968,8 @@ public class MetadataPackageImpl extends EPackageImpl implements MetadataPackage
 	 * @generated
 	 */
 	@Override
-	public EReference getPackageMetadata_Classes() {
-		return (EReference)packageMetadataEClass.getEStructuralFeatures().get(2);
+	public EAttribute getPackageMetadata_ModelFingerprint() {
+		return (EAttribute)packageMetadataEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -978,7 +978,7 @@ public class MetadataPackageImpl extends EPackageImpl implements MetadataPackage
 	 * @generated
 	 */
 	@Override
-	public EReference getPackageMetadata_Aspects() {
+	public EReference getPackageMetadata_Classes() {
 		return (EReference)packageMetadataEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -988,8 +988,28 @@ public class MetadataPackageImpl extends EPackageImpl implements MetadataPackage
 	 * @generated
 	 */
 	@Override
-	public EReference getPackageMetadata_Profiles() {
+	public EReference getPackageMetadata_Aspects() {
 		return (EReference)packageMetadataEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getPackageMetadata_Profiles() {
+		return (EReference)packageMetadataEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getPackageMetadata_Properties() {
+		return (EReference)packageMetadataEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -1619,9 +1639,11 @@ public class MetadataPackageImpl extends EPackageImpl implements MetadataPackage
 		packageMetadataEClass = createEClass(PACKAGE_METADATA);
 		createEReference(packageMetadataEClass, PACKAGE_METADATA__EPACKAGE);
 		createEAttribute(packageMetadataEClass, PACKAGE_METADATA__NS_URI);
+		createEAttribute(packageMetadataEClass, PACKAGE_METADATA__MODEL_FINGERPRINT);
 		createEReference(packageMetadataEClass, PACKAGE_METADATA__CLASSES);
 		createEReference(packageMetadataEClass, PACKAGE_METADATA__ASPECTS);
 		createEReference(packageMetadataEClass, PACKAGE_METADATA__PROFILES);
+		createEReference(packageMetadataEClass, PACKAGE_METADATA__PROPERTIES);
 
 		classMetadataEClass = createEClass(CLASS_METADATA);
 		createEReference(classMetadataEClass, CLASS_METADATA__PACKAGE);
@@ -1804,9 +1826,11 @@ public class MetadataPackageImpl extends EPackageImpl implements MetadataPackage
 		initEClass(packageMetadataEClass, PackageMetadata.class, "PackageMetadata", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getPackageMetadata_EPackage(), ecorePackage.getEPackage(), null, "ePackage", null, 0, 1, PackageMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPackageMetadata_NsURI(), ecorePackage.getEString(), "nsURI", null, 0, 1, PackageMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPackageMetadata_ModelFingerprint(), ecorePackage.getEString(), "modelFingerprint", null, 0, 1, PackageMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPackageMetadata_Classes(), this.getClassMetadata(), this.getClassMetadata_Package(), "classes", null, 0, -1, PackageMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPackageMetadata_Aspects(), this.getPackageAspect(), this.getPackageAspect_PackageMetadata(), "aspects", null, 0, -1, PackageMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getPackageMetadata_Profiles(), this.getPackageProfile(), null, "profiles", null, 0, -1, PackageMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getPackageMetadata_Properties(), ecorePackage.getEStringToStringMapEntry(), null, "properties", null, 0, -1, PackageMetadata.class, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(classMetadataEClass, ClassMetadata.class, "ClassMetadata", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getClassMetadata_Package(), this.getPackageMetadata(), this.getPackageMetadata_Classes(), "package", null, 0, 1, ClassMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

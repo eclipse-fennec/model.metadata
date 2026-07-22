@@ -19,16 +19,21 @@ import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.EStringToStringMapEntryImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.fennec.model.metadata.ClassMetadata;
@@ -51,9 +56,11 @@ import org.eclipse.fennec.model.metadata.PackageProfile;
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.PackageMetadataImpl#getAllDiagnostics <em>All Diagnostics</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.PackageMetadataImpl#getEPackage <em>EPackage</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.PackageMetadataImpl#getNsURI <em>Ns URI</em>}</li>
+ *   <li>{@link org.eclipse.fennec.model.metadata.impl.PackageMetadataImpl#getModelFingerprint <em>Model Fingerprint</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.PackageMetadataImpl#getClasses <em>Classes</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.PackageMetadataImpl#getAspects <em>Aspects</em>}</li>
  *   <li>{@link org.eclipse.fennec.model.metadata.impl.PackageMetadataImpl#getProfiles <em>Profiles</em>}</li>
+ *   <li>{@link org.eclipse.fennec.model.metadata.impl.PackageMetadataImpl#getProperties <em>Properties</em>}</li>
  * </ul>
  *
  * @generated
@@ -100,6 +107,26 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 	protected String nsURI = NS_URI_EDEFAULT;
 
 	/**
+	 * The default value of the '{@link #getModelFingerprint() <em>Model Fingerprint</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getModelFingerprint()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String MODEL_FINGERPRINT_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getModelFingerprint() <em>Model Fingerprint</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getModelFingerprint()
+	 * @generated
+	 * @ordered
+	 */
+	protected String modelFingerprint = MODEL_FINGERPRINT_EDEFAULT;
+
+	/**
 	 * The cached value of the '{@link #getClasses() <em>Classes</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -128,6 +155,16 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 	 * @ordered
 	 */
 	protected EList<PackageProfile> profiles;
+
+	/**
+	 * The cached value of the '{@link #getProperties() <em>Properties</em>}' map.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProperties()
+	 * @generated
+	 * @ordered
+	 */
+	protected EMap<String, String> properties;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -252,6 +289,29 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 	 * @generated
 	 */
 	@Override
+	public String getModelFingerprint() {
+		return modelFingerprint;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setModelFingerprint(String newModelFingerprint) {
+		String oldModelFingerprint = modelFingerprint;
+		modelFingerprint = newModelFingerprint;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MetadataPackage.PACKAGE_METADATA__MODEL_FINGERPRINT, oldModelFingerprint, modelFingerprint));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EList<ClassMetadata> getClasses() {
 		if (classes == null) {
 			classes = new EObjectContainmentWithInverseEList<ClassMetadata>(ClassMetadata.class, this, MetadataPackage.PACKAGE_METADATA__CLASSES, MetadataPackage.CLASS_METADATA__PACKAGE);
@@ -290,6 +350,19 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
+	public EMap<String, String> getProperties() {
+		if (properties == null) {
+			properties = new EcoreEMap<String,String>(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY, EStringToStringMapEntryImpl.class, this, MetadataPackage.PACKAGE_METADATA__PROPERTIES);
+		}
+		return properties;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -318,6 +391,8 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 				return ((InternalEList<?>)getAspects()).basicRemove(otherEnd, msgs);
 			case MetadataPackage.PACKAGE_METADATA__PROFILES:
 				return ((InternalEList<?>)getProfiles()).basicRemove(otherEnd, msgs);
+			case MetadataPackage.PACKAGE_METADATA__PROPERTIES:
+				return ((InternalEList<?>)getProperties()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -339,12 +414,17 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 				return basicGetEPackage();
 			case MetadataPackage.PACKAGE_METADATA__NS_URI:
 				return getNsURI();
+			case MetadataPackage.PACKAGE_METADATA__MODEL_FINGERPRINT:
+				return getModelFingerprint();
 			case MetadataPackage.PACKAGE_METADATA__CLASSES:
 				return getClasses();
 			case MetadataPackage.PACKAGE_METADATA__ASPECTS:
 				return getAspects();
 			case MetadataPackage.PACKAGE_METADATA__PROFILES:
 				return getProfiles();
+			case MetadataPackage.PACKAGE_METADATA__PROPERTIES:
+				if (coreType) return getProperties();
+				else return getProperties().map();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -368,6 +448,9 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 			case MetadataPackage.PACKAGE_METADATA__NS_URI:
 				setNsURI((String)newValue);
 				return;
+			case MetadataPackage.PACKAGE_METADATA__MODEL_FINGERPRINT:
+				setModelFingerprint((String)newValue);
+				return;
 			case MetadataPackage.PACKAGE_METADATA__CLASSES:
 				getClasses().clear();
 				getClasses().addAll((Collection<? extends ClassMetadata>)newValue);
@@ -379,6 +462,9 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 			case MetadataPackage.PACKAGE_METADATA__PROFILES:
 				getProfiles().clear();
 				getProfiles().addAll((Collection<? extends PackageProfile>)newValue);
+				return;
+			case MetadataPackage.PACKAGE_METADATA__PROPERTIES:
+				((EStructuralFeature.Setting)getProperties()).set(newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -401,6 +487,9 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 			case MetadataPackage.PACKAGE_METADATA__NS_URI:
 				setNsURI(NS_URI_EDEFAULT);
 				return;
+			case MetadataPackage.PACKAGE_METADATA__MODEL_FINGERPRINT:
+				setModelFingerprint(MODEL_FINGERPRINT_EDEFAULT);
+				return;
 			case MetadataPackage.PACKAGE_METADATA__CLASSES:
 				getClasses().clear();
 				return;
@@ -409,6 +498,9 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 				return;
 			case MetadataPackage.PACKAGE_METADATA__PROFILES:
 				getProfiles().clear();
+				return;
+			case MetadataPackage.PACKAGE_METADATA__PROPERTIES:
+				getProperties().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -430,12 +522,16 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 				return ePackage != null;
 			case MetadataPackage.PACKAGE_METADATA__NS_URI:
 				return NS_URI_EDEFAULT == null ? nsURI != null : !NS_URI_EDEFAULT.equals(nsURI);
+			case MetadataPackage.PACKAGE_METADATA__MODEL_FINGERPRINT:
+				return MODEL_FINGERPRINT_EDEFAULT == null ? modelFingerprint != null : !MODEL_FINGERPRINT_EDEFAULT.equals(modelFingerprint);
 			case MetadataPackage.PACKAGE_METADATA__CLASSES:
 				return classes != null && !classes.isEmpty();
 			case MetadataPackage.PACKAGE_METADATA__ASPECTS:
 				return aspects != null && !aspects.isEmpty();
 			case MetadataPackage.PACKAGE_METADATA__PROFILES:
 				return profiles != null && !profiles.isEmpty();
+			case MetadataPackage.PACKAGE_METADATA__PROPERTIES:
+				return properties != null && !properties.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -452,6 +548,8 @@ public class PackageMetadataImpl extends MinimalEObjectImpl.Container implements
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (nsURI: ");
 		result.append(nsURI);
+		result.append(", modelFingerprint: ");
+		result.append(modelFingerprint);
 		result.append(')');
 		return result.toString();
 	}
