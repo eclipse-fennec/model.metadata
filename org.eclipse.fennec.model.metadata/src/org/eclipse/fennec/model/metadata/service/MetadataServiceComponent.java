@@ -15,6 +15,7 @@ package org.eclipse.fennec.model.metadata.service;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.fennec.model.metadata.api.ArtifactStore;
 import org.eclipse.fennec.model.metadata.api.AspectProvider;
 import org.eclipse.fennec.model.metadata.api.MetadataHandler;
 import org.eclipse.fennec.model.metadata.api.MetadataIndex;
@@ -162,5 +163,31 @@ public class MetadataServiceComponent extends MetadataServiceImpl {
      */
     void removeHandler(MetadataHandler handler) {
         removeMetadataHandler(handler);
+    }
+
+    // -------------------------------------------------------------------------
+    // ArtifactStore (optional, enables resolve-or-build reuse of derived profiles)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Bind: called by DS when an {@link ArtifactStore} OSGi service appears. Enables
+     * resolve-or-build — derived profiles are persisted once and reused on package
+     * re-registration instead of being rebuilt.
+     */
+    @Reference(
+            cardinality = ReferenceCardinality.OPTIONAL,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetArtifactStore"
+    )
+    void bindArtifactStore(ArtifactStore store) {
+        setArtifactStore(store);
+    }
+
+    /**
+     * Unbind: called by DS when the {@link ArtifactStore} OSGi service disappears.
+     * Reverts to always-build behavior.
+     */
+    void unsetArtifactStore(ArtifactStore store) {
+        setArtifactStore(null);
     }
 }

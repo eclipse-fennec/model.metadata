@@ -14,6 +14,7 @@ package org.eclipse.fennec.model.metadata.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -24,6 +25,7 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EParameter;
@@ -46,6 +48,7 @@ import org.eclipse.fennec.model.metadata.PackageProfile;
 import org.eclipse.fennec.model.metadata.ParameterMetadata;
 import org.eclipse.fennec.model.metadata.ReferenceMetadata;
 import org.eclipse.fennec.model.metadata.api.AspectProvider;
+import org.eclipse.fennec.model.metadata.api.ArtifactStore;
 import org.eclipse.fennec.model.metadata.api.FingerprintService;
 import org.eclipse.fennec.model.metadata.api.MetadataHandler;
 import org.eclipse.fennec.model.metadata.api.MetadataIndex;
@@ -92,6 +95,11 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
     // Computes the cached per-package modelFingerprint. Stateless and cheap; defaults to
     // the built-in implementation and can be replaced (e.g. injected by the OSGi component).
     private volatile FingerprintService fingerprintService = new DefaultFingerprintService();
+
+    // Optional durable store for derived artifacts (profiles). When present, profiles are
+    // resolved-or-built (reused across re-registration instead of rebuilt). When null, the
+    // service always builds (backward-compatible behavior).
+    private volatile ArtifactStore artifactStore;
 
     /**
      * Creates a new MetadataServiceImpl with an empty registry and default Map-based index.
@@ -413,6 +421,18 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         if (fingerprintService != null) {
             this.fingerprintService = fingerprintService;
         }
+    }
+
+    /**
+     * Sets the {@link ArtifactStore} used to persist and reuse derived profiles. When set,
+     * profile building becomes resolve-or-build (a stored profile for the same
+     * {@code (modelFingerprint, typeId)} is reused instead of rebuilt). Pass {@code null}
+     * to disable (always-build).
+     *
+     * @param artifactStore the store, or {@code null} to disable reuse
+     */
+    public void setArtifactStore(ArtifactStore artifactStore) {
+        this.artifactStore = artifactStore;
     }
 
     /**
@@ -870,9 +890,30 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
 
     private void buildProfilesForProvider(AspectProvider provider, PackageMetadata pkgMetadata) {
         String typeId = provider.getAspectTypeId();
+
+        // Resolve-or-build: if a store holds a profile for this model version + provider,
+        // reuse it instead of rebuilding (mediator role). The key is the local
+        // modelFingerprint (join key); provider-specific derivation inputs may extend it
+        // in the future. Reuse decisions never trust an externally supplied fingerprint.
+        ArtifactStore store = this.artifactStore;
+        String fp = pkgMetadata.getModelFingerprint();
+        if (store != null && fp != null) {
+            Optional<EObject> hit = store.resolve(fp, typeId);
+            if (hit.isPresent() && hit.get() instanceof PackageProfile reused) {
+                reused.setTypeId(typeId);
+                pkgMetadata.getProfiles().add(reused);
+                return; // reused — no rebuild
+            }
+        }
+
+        // Filtered copy for the provider: metadata + only this provider's aspects, and NO
+        // profiles. Profiles are outputs — a provider must not see other providers' profiles,
+        // and copying them is unnecessary. Temporarily detach profiles for the copy; we hold
+        // the write lock, so this transient change is not observable.
         PackageMetadata filteredCopy;
+        java.util.List<PackageProfile> detachedProfiles = new java.util.ArrayList<>(pkgMetadata.getProfiles());
+        pkgMetadata.getProfiles().clear();
         try {
-            // Create filtered copy with only this provider's aspects
             filteredCopy = EcoreUtil.copy(pkgMetadata);
             filterAspectsByTypeId(filteredCopy, typeId);
         } catch (IllegalArgumentException e) {
@@ -880,12 +921,17 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
             // non-EMF-registered aspect subclasses). In production, concrete EMF aspect
             // classes (e.g., ClassCodecAspect) will work fine.
             return;
+        } finally {
+            pkgMetadata.getProfiles().addAll(detachedProfiles);
         }
 
         PackageProfile profile = provider.buildProfiles(filteredCopy);
         if (profile != null) {
             profile.setTypeId(typeId);
             pkgMetadata.getProfiles().add(profile);
+            if (store != null && fp != null) {
+                store.put(fp, typeId, profile);
+            }
         }
     }
 
