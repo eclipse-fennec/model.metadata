@@ -9,6 +9,7 @@
   <foreignModel>metadata-api.ecore</foreignModel>
   <genPackages prefix="Api" basePackage="org.eclipse.fennec.model.metadata" disposableProviderFactory="true"
       ecorePackage="metadata-api.ecore#/">
+    <genDataTypes ecoreDataType="metadata-api.ecore#//StringToObjectMap"/>
     <genClasses image="false" ecoreClass="metadata-api.ecore#//MetadataIndexReader">
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataIndexReader/findByInstanceClassName">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataIndexReader/findByInstanceClassName/nsURI"/>
@@ -163,6 +164,10 @@
     <genClasses image="false" ecoreClass="metadata-api.ecore#//MetadataWhiteboard">
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataWhiteboard/registerPackage">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataWhiteboard/registerPackage/ePackage"/>
+      </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataWhiteboard/registerPackage.1">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataWhiteboard/registerPackage.1/ePackage"/>
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataWhiteboard/registerPackage.1/properties"/>
       </genOperations>
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataWhiteboard/unregisterPackage">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataWhiteboard/unregisterPackage/ePackage"/>

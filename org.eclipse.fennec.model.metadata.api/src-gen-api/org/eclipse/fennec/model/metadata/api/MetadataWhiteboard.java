@@ -12,6 +12,8 @@
  */
 package org.eclipse.fennec.model.metadata.api;
 
+import java.util.Map;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -46,6 +48,17 @@ public interface MetadataWhiteboard extends MetadataService {
 	 * @generated
 	 */
 	PackageMetadata registerPackage(EPackage ePackage);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Register an EPackage, additionally taking the OSGi service properties of its EPackage service (as injected into a DS bind method) as transient build context. The properties are exposed to AspectProviders via PackageMetadata.getProperties() (stringified, never serialized) so providers can decide relevance and handle their own fingerprint/persistence concerns; the model fingerprint is computed locally and cached on the PackageMetadata. Otherwise like registerPackage(EPackage).
+	 * <!-- end-model-doc -->
+	 * @model propertiesDataType="org.eclipse.fennec.model.metadata.api.StringToObjectMap"
+	 * @generated
+	 */
+	PackageMetadata registerPackage(EPackage ePackage, Map<String, Object> properties);
 
 	/**
 	 * <!-- begin-user-doc -->

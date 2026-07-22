@@ -324,6 +324,12 @@
     </eOperations>
   </eClassifiers>
   <!-- ==================== Admin / Whiteboard Interface ==================== -->
+  <eClassifiers xsi:type="ecore:EDataType" name="StringToObjectMap" instanceClassName="java.util.Map"
+      instanceTypeName="java.util.Map&lt;java.lang.String, java.lang.Object&gt;">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A java.util.Map&lt;String, Object&gt; of properties, e.g. the OSGi service properties of an EPackage service (as injected into a DS bind method)."/>
+    </eAnnotations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MetadataWhiteboard" abstract="true"
       interface="true" eSuperTypes="#//MetadataService">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -335,6 +341,13 @@
         <details key="documentation" value="Register an EPackage and build metadata for all its classes and features. Calls all registered AspectProviders to build aspects, resolves cross-references, then calls buildProfiles on each provider. Automatically indexes the metadata. Returns the existing metadata if the package is already registered (no re-computation). To refresh, unregister first, then re-register."/>
       </eAnnotations>
       <eParameters name="ePackage" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EPackage"/>
+    </eOperations>
+    <eOperations name="registerPackage" eType="ecore:EClass metadata.ecore#//PackageMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Register an EPackage, additionally taking the OSGi service properties of its EPackage service (as injected into a DS bind method) as transient build context. The properties are exposed to AspectProviders via PackageMetadata.getProperties() (stringified, never serialized) so providers can decide relevance and handle their own fingerprint/persistence concerns; the model fingerprint is computed locally and cached on the PackageMetadata. Otherwise like registerPackage(EPackage)."/>
+      </eAnnotations>
+      <eParameters name="ePackage" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EPackage"/>
+      <eParameters name="properties" eType="#//StringToObjectMap"/>
     </eOperations>
     <eOperations name="unregisterPackage">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

@@ -12,7 +12,10 @@
  */
 package org.eclipse.fennec.model.metadata.api.impl;
 
+import java.util.Map;
+
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -85,6 +88,13 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	private EClass aspectProviderEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType stringToObjectMapEDataType = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -655,7 +665,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataWhiteboard__UnregisterPackage__EPackage() {
+	public EOperation getMetadataWhiteboard__RegisterPackage__EPackage_Map() {
 		return metadataWhiteboardEClass.getEOperations().get(1);
 	}
 
@@ -665,7 +675,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataWhiteboard__RegisterAspectProvider__AspectProvider() {
+	public EOperation getMetadataWhiteboard__UnregisterPackage__EPackage() {
 		return metadataWhiteboardEClass.getEOperations().get(2);
 	}
 
@@ -675,7 +685,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataWhiteboard__UnregisterAspectProvider__AspectProvider() {
+	public EOperation getMetadataWhiteboard__RegisterAspectProvider__AspectProvider() {
 		return metadataWhiteboardEClass.getEOperations().get(3);
 	}
 
@@ -685,7 +695,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataWhiteboard__GetAspectProviders() {
+	public EOperation getMetadataWhiteboard__UnregisterAspectProvider__AspectProvider() {
 		return metadataWhiteboardEClass.getEOperations().get(4);
 	}
 
@@ -695,7 +705,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataWhiteboard__GetMetadataIndex() {
+	public EOperation getMetadataWhiteboard__GetAspectProviders() {
 		return metadataWhiteboardEClass.getEOperations().get(5);
 	}
 
@@ -705,7 +715,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataWhiteboard__SetMetadataIndex__MetadataIndex() {
+	public EOperation getMetadataWhiteboard__GetMetadataIndex() {
 		return metadataWhiteboardEClass.getEOperations().get(6);
 	}
 
@@ -715,7 +725,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataWhiteboard__UnsetMetadataIndex__MetadataIndex() {
+	public EOperation getMetadataWhiteboard__SetMetadataIndex__MetadataIndex() {
 		return metadataWhiteboardEClass.getEOperations().get(7);
 	}
 
@@ -725,7 +735,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataWhiteboard__AddMetadataHandler__MetadataHandler() {
+	public EOperation getMetadataWhiteboard__UnsetMetadataIndex__MetadataIndex() {
 		return metadataWhiteboardEClass.getEOperations().get(8);
 	}
 
@@ -735,8 +745,18 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataWhiteboard__RemoveMetadataHandler__MetadataHandler() {
+	public EOperation getMetadataWhiteboard__AddMetadataHandler__MetadataHandler() {
 		return metadataWhiteboardEClass.getEOperations().get(9);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EOperation getMetadataWhiteboard__RemoveMetadataHandler__MetadataHandler() {
+		return metadataWhiteboardEClass.getEOperations().get(10);
 	}
 
 	/**
@@ -835,6 +855,16 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
+	public EDataType getStringToObjectMap() {
+		return stringToObjectMapEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public ApiFactory getApiFactory() {
 		return (ApiFactory)getEFactoryInstance();
 	}
@@ -913,6 +943,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 
 		metadataWhiteboardEClass = createEClass(METADATA_WHITEBOARD);
 		createEOperation(metadataWhiteboardEClass, METADATA_WHITEBOARD___REGISTER_PACKAGE__EPACKAGE);
+		createEOperation(metadataWhiteboardEClass, METADATA_WHITEBOARD___REGISTER_PACKAGE__EPACKAGE_MAP);
 		createEOperation(metadataWhiteboardEClass, METADATA_WHITEBOARD___UNREGISTER_PACKAGE__EPACKAGE);
 		createEOperation(metadataWhiteboardEClass, METADATA_WHITEBOARD___REGISTER_ASPECT_PROVIDER__ASPECTPROVIDER);
 		createEOperation(metadataWhiteboardEClass, METADATA_WHITEBOARD___UNREGISTER_ASPECT_PROVIDER__ASPECTPROVIDER);
@@ -932,6 +963,9 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 		createEOperation(aspectProviderEClass, ASPECT_PROVIDER___BUILD_REFERENCE_ASPECT__REFERENCEMETADATA);
 		createEOperation(aspectProviderEClass, ASPECT_PROVIDER___BUILD_OPERATION_ASPECT__OPERATIONMETADATA);
 		createEOperation(aspectProviderEClass, ASPECT_PROVIDER___BUILD_PROFILES__PACKAGEMETADATA);
+
+		// Create data types
+		stringToObjectMapEDataType = createEDataType(STRING_TO_OBJECT_MAP);
 	}
 
 	/**
@@ -1131,6 +1165,10 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 		op = initEOperation(getMetadataWhiteboard__RegisterPackage__EPackage(), theMetadataPackage.getPackageMetadata(), "registerPackage", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEPackage(), "ePackage", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+		op = initEOperation(getMetadataWhiteboard__RegisterPackage__EPackage_Map(), theMetadataPackage.getPackageMetadata(), "registerPackage", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEPackage(), "ePackage", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getStringToObjectMap(), "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		op = initEOperation(getMetadataWhiteboard__UnregisterPackage__EPackage(), null, "unregisterPackage", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEPackage(), "ePackage", 0, 1, IS_UNIQUE, IS_ORDERED);
 
@@ -1180,6 +1218,9 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 
 		op = initEOperation(getAspectProvider__BuildProfiles__PackageMetadata(), theMetadataPackage.getPackageProfile(), "buildProfiles", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theMetadataPackage.getPackageMetadata(), "filteredMetadataCopy", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		// Initialize data types
+		initEDataType(stringToObjectMapEDataType, Map.class, "StringToObjectMap", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS, "java.util.Map<java.lang.String, java.lang.Object>");
 
 		// Create resource
 		createResource(eNS_URI);

@@ -14,6 +14,7 @@ package org.eclipse.fennec.model.metadata.api;
 
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 
 import org.eclipse.fennec.emf.osgi.annotation.provide.EPackage;
@@ -988,13 +989,22 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	int METADATA_WHITEBOARD___REGISTER_PACKAGE__EPACKAGE = METADATA_SERVICE_OPERATION_COUNT + 0;
 
 	/**
+	 * The operation id for the '<em>Register Package</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_WHITEBOARD___REGISTER_PACKAGE__EPACKAGE_MAP = METADATA_SERVICE_OPERATION_COUNT + 1;
+
+	/**
 	 * The operation id for the '<em>Unregister Package</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD___UNREGISTER_PACKAGE__EPACKAGE = METADATA_SERVICE_OPERATION_COUNT + 1;
+	int METADATA_WHITEBOARD___UNREGISTER_PACKAGE__EPACKAGE = METADATA_SERVICE_OPERATION_COUNT + 2;
 
 	/**
 	 * The operation id for the '<em>Register Aspect Provider</em>' operation.
@@ -1003,7 +1013,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD___REGISTER_ASPECT_PROVIDER__ASPECTPROVIDER = METADATA_SERVICE_OPERATION_COUNT + 2;
+	int METADATA_WHITEBOARD___REGISTER_ASPECT_PROVIDER__ASPECTPROVIDER = METADATA_SERVICE_OPERATION_COUNT + 3;
 
 	/**
 	 * The operation id for the '<em>Unregister Aspect Provider</em>' operation.
@@ -1012,7 +1022,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD___UNREGISTER_ASPECT_PROVIDER__ASPECTPROVIDER = METADATA_SERVICE_OPERATION_COUNT + 3;
+	int METADATA_WHITEBOARD___UNREGISTER_ASPECT_PROVIDER__ASPECTPROVIDER = METADATA_SERVICE_OPERATION_COUNT + 4;
 
 	/**
 	 * The operation id for the '<em>Get Aspect Providers</em>' operation.
@@ -1021,7 +1031,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD___GET_ASPECT_PROVIDERS = METADATA_SERVICE_OPERATION_COUNT + 4;
+	int METADATA_WHITEBOARD___GET_ASPECT_PROVIDERS = METADATA_SERVICE_OPERATION_COUNT + 5;
 
 	/**
 	 * The operation id for the '<em>Get Metadata Index</em>' operation.
@@ -1030,7 +1040,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD___GET_METADATA_INDEX = METADATA_SERVICE_OPERATION_COUNT + 5;
+	int METADATA_WHITEBOARD___GET_METADATA_INDEX = METADATA_SERVICE_OPERATION_COUNT + 6;
 
 	/**
 	 * The operation id for the '<em>Set Metadata Index</em>' operation.
@@ -1039,7 +1049,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD___SET_METADATA_INDEX__METADATAINDEX = METADATA_SERVICE_OPERATION_COUNT + 6;
+	int METADATA_WHITEBOARD___SET_METADATA_INDEX__METADATAINDEX = METADATA_SERVICE_OPERATION_COUNT + 7;
 
 	/**
 	 * The operation id for the '<em>Unset Metadata Index</em>' operation.
@@ -1048,7 +1058,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD___UNSET_METADATA_INDEX__METADATAINDEX = METADATA_SERVICE_OPERATION_COUNT + 7;
+	int METADATA_WHITEBOARD___UNSET_METADATA_INDEX__METADATAINDEX = METADATA_SERVICE_OPERATION_COUNT + 8;
 
 	/**
 	 * The operation id for the '<em>Add Metadata Handler</em>' operation.
@@ -1057,7 +1067,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD___ADD_METADATA_HANDLER__METADATAHANDLER = METADATA_SERVICE_OPERATION_COUNT + 8;
+	int METADATA_WHITEBOARD___ADD_METADATA_HANDLER__METADATAHANDLER = METADATA_SERVICE_OPERATION_COUNT + 9;
 
 	/**
 	 * The operation id for the '<em>Remove Metadata Handler</em>' operation.
@@ -1066,7 +1076,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD___REMOVE_METADATA_HANDLER__METADATAHANDLER = METADATA_SERVICE_OPERATION_COUNT + 9;
+	int METADATA_WHITEBOARD___REMOVE_METADATA_HANDLER__METADATAHANDLER = METADATA_SERVICE_OPERATION_COUNT + 10;
 
 	/**
 	 * The number of operations of the '<em>Metadata Whiteboard</em>' class.
@@ -1075,7 +1085,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_WHITEBOARD_OPERATION_COUNT = METADATA_SERVICE_OPERATION_COUNT + 10;
+	int METADATA_WHITEBOARD_OPERATION_COUNT = METADATA_SERVICE_OPERATION_COUNT + 11;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.model.metadata.api.AspectProvider <em>Aspect Provider</em>}' class.
@@ -1176,6 +1186,16 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @ordered
 	 */
 	int ASPECT_PROVIDER_OPERATION_COUNT = 8;
+
+	/**
+	 * The meta object id for the '<em>String To Object Map</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see java.util.Map
+	 * @see org.eclipse.fennec.model.metadata.api.impl.ApiPackageImpl#getStringToObjectMap()
+	 * @generated
+	 */
+	int STRING_TO_OBJECT_MAP = 7;
 
 
 	/**
@@ -1679,6 +1699,16 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	EOperation getMetadataWhiteboard__RegisterPackage__EPackage();
 
 	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataWhiteboard#registerPackage(org.eclipse.emf.ecore.EPackage, java.util.Map) <em>Register Package</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Register Package</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataWhiteboard#registerPackage(org.eclipse.emf.ecore.EPackage, java.util.Map)
+	 * @generated
+	 */
+	EOperation getMetadataWhiteboard__RegisterPackage__EPackage_Map();
+
+	/**
 	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataWhiteboard#unregisterPackage(org.eclipse.emf.ecore.EPackage) <em>Unregister Package</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1857,6 +1887,20 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EOperation getAspectProvider__BuildProfiles__PackageMetadata();
+
+	/**
+	 * Returns the meta object for data type '{@link java.util.Map <em>String To Object Map</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+     * <!-- begin-model-doc -->
+     * A java.util.Map<String, Object> of properties, e.g. the OSGi service properties of an EPackage service (as injected into a DS bind method).
+     * <!-- end-model-doc -->
+	 * @return the meta object for data type '<em>String To Object Map</em>'.
+	 * @see java.util.Map
+	 * @model instanceClass="java.util.Map&lt;java.lang.String, java.lang.Object&gt;"
+	 * @generated
+	 */
+	EDataType getStringToObjectMap();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -2294,6 +2338,14 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 		EOperation METADATA_WHITEBOARD___REGISTER_PACKAGE__EPACKAGE = eINSTANCE.getMetadataWhiteboard__RegisterPackage__EPackage();
 
 		/**
+		 * The meta object literal for the '<em><b>Register Package</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_WHITEBOARD___REGISTER_PACKAGE__EPACKAGE_MAP = eINSTANCE.getMetadataWhiteboard__RegisterPackage__EPackage_Map();
+
+		/**
 		 * The meta object literal for the '<em><b>Unregister Package</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -2438,6 +2490,16 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EOperation ASPECT_PROVIDER___BUILD_PROFILES__PACKAGEMETADATA = eINSTANCE.getAspectProvider__BuildProfiles__PackageMetadata();
+
+		/**
+		 * The meta object literal for the '<em>String To Object Map</em>' data type.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see java.util.Map
+		 * @see org.eclipse.fennec.model.metadata.api.impl.ApiPackageImpl#getStringToObjectMap()
+		 * @generated
+		 */
+		EDataType STRING_TO_OBJECT_MAP = eINSTANCE.getStringToObjectMap();
 
 	}
 

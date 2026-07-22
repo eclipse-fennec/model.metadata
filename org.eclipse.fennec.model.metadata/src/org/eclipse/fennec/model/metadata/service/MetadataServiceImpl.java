@@ -447,6 +447,7 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
      * @param properties the EPackage service properties, or {@code null} if none
      * @return the new or existing PackageMetadata, or {@code null} if {@code ePackage} is null
      */
+    @Override
     public PackageMetadata registerPackage(EPackage ePackage, Map<String, Object> properties) {
         if (ePackage == null) {
             return null;
