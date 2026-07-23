@@ -12,9 +12,11 @@
  ********************************************************************/
 package org.eclipse.fennec.model.metadata.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -79,8 +81,26 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
     private final List<MetadataHandler> metadataHandlers = new CopyOnWriteArrayList<>();
     private volatile MetadataIndex index;
 
+    // Primary registry: canonical modelFingerprint -> metadata. One entry per model VERSION —
+    // two diverging versions of the same nsURI coexist; identical content dedupes onto one entry.
+    private final Map<String, PackageMetadata> packagesByFingerprint = new ConcurrentHashMap<>();
+
+    // Secondary, best-effort index: nsURI -> versions in registration order (last = newest).
+    // Name-based lookups are inherently ambiguous under multi-version registration; exact
+    // resolution goes through the fingerprint.
+    private final Map<String, List<PackageMetadata>> packagesByNsURI = new ConcurrentHashMap<>();
+
+    // Whiteboard liveness per fingerprint: number of registerPackage calls not yet undone.
+    // Entries created by the pull path (getPackageMetadata(EPackage)) carry no count and are
+    // never removed by unregisterPackage.
+    private final Map<String, Integer> livenessByFingerprint = new ConcurrentHashMap<>();
+
+    // Memoized fingerprint per EPackage instance for the hot read path. Write paths
+    // (register/unregister) always compute fresh and refresh this memo; a mutation of a
+    // package that is never re-registered is deliberately not tracked.
+    private final Map<EPackage, String> fingerprintByInstance = Collections.synchronizedMap(new WeakHashMap<>());
+
     // Fast lookup maps for EClass/EStructuralFeature -> Metadata (not indexed by string)
-    private final Map<String, PackageMetadata> packagesByNsURI = new ConcurrentHashMap<>();
     private final Map<EClass, ClassMetadata> classesByEClass = new ConcurrentHashMap<>();
     private final Map<EStructuralFeature, FeatureMetadata> featuresByEFeature = new ConcurrentHashMap<>();
     private final Map<EOperation, OperationMetadata> operationsByEOperation = new ConcurrentHashMap<>();
@@ -153,7 +173,50 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
 
     @Override
     public PackageMetadata getPackageMetadata(String nsURI) {
-        return packagesByNsURI.get(nsURI);
+        if (nsURI == null) {
+            return null;
+        }
+        List<PackageMetadata> versions = packagesByNsURI.get(nsURI);
+        if (versions == null) {
+            return null;
+        }
+        // Best effort under multi-version ambiguity: the most recently registered version.
+        PackageMetadata last = null;
+        for (PackageMetadata version : versions) {
+            last = version;
+        }
+        return last;
+    }
+
+    @Override
+    public PackageMetadata getPackageMetadata(EPackage ePackage) {
+        if (ePackage == null) {
+            return null;
+        }
+        // Lock-free fast path for known content.
+        PackageMetadata existing = packagesByFingerprint.get(memoizedFingerprint(ePackage));
+        if (existing != null) {
+            return existing;
+        }
+        lock.writeLock().lock();
+        try {
+            // Recompute fresh under the lock (the memo may predate a content change).
+            String fp = fingerprintFor(ePackage);
+            PackageMetadata pkgMetadata = packagesByFingerprint.get(fp);
+            if (pkgMetadata != null) {
+                return pkgMetadata;
+            }
+            // Pull path: build-and-cache without touching whiteboard liveness — a memoized
+            // read, not a registration; unregisterPackage never evicts pull-created entries.
+            return buildAndRegister(ePackage, fp, null);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    @Override
+    public PackageMetadata getPackageMetadataByFingerprint(String fingerprint) {
+        return fingerprint != null ? packagesByFingerprint.get(fingerprint) : null;
     }
 
     @Override
@@ -247,7 +310,7 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         }
         lock.readLock().lock();
         try {
-            PackageMetadata pkgMetadata = packagesByNsURI.get(ePackage.getNsURI());
+            PackageMetadata pkgMetadata = resolveRegistered(ePackage);
             if (pkgMetadata != null) {
                 for (PackageAspect aspect : pkgMetadata.getAspects()) {
                     if (aspectTypeId.equals(aspect.getTypeId())) {
@@ -322,7 +385,7 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         }
         lock.readLock().lock();
         try {
-            PackageMetadata pkgMetadata = packagesByNsURI.get(ePackage.getNsURI());
+            PackageMetadata pkgMetadata = resolveRegistered(ePackage);
             return findPackageProfile(pkgMetadata, typeId);
         } finally {
             lock.readLock().unlock();
@@ -336,7 +399,7 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         }
         lock.readLock().lock();
         try {
-            PackageMetadata pkgMetadata = packagesByNsURI.get(nsURI);
+            PackageMetadata pkgMetadata = getPackageMetadata(nsURI);
             return findPackageProfile(pkgMetadata, typeId);
         } finally {
             lock.readLock().unlock();
@@ -420,7 +483,47 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
     public void setFingerprintService(FingerprintService fingerprintService) {
         if (fingerprintService != null) {
             this.fingerprintService = fingerprintService;
+            // Memoized values were computed with the previous service/scheme.
+            fingerprintByInstance.clear();
         }
+    }
+
+    /**
+     * Computes the model fingerprint of this instance freshly and refreshes the per-instance
+     * memo. Write paths (register/unregister) must use this — a memoized value may predate a
+     * content change of the (mutable) EPackage.
+     */
+    private String fingerprintFor(EPackage ePackage) {
+        String fp = fingerprintService.fingerprint(ePackage);
+        fingerprintByInstance.put(ePackage, fp);
+        return fp;
+    }
+
+    /** Memoized fingerprint for hot read paths; computes (and memoizes) on first sight. */
+    private String memoizedFingerprint(EPackage ePackage) {
+        String fp = fingerprintByInstance.get(ePackage);
+        return fp != null ? fp : fingerprintFor(ePackage);
+    }
+
+    /**
+     * Resolves the registered metadata for exactly this instance's model version (by
+     * fingerprint, never builds). Falls back to the nsURI index only for legacy entries
+     * that were loaded without a modelFingerprint, and only when unambiguous — the
+     * fallback can never cross two live versions.
+     */
+    private PackageMetadata resolveRegistered(EPackage ePackage) {
+        PackageMetadata pkgMetadata = packagesByFingerprint.get(memoizedFingerprint(ePackage));
+        if (pkgMetadata != null) {
+            return pkgMetadata;
+        }
+        List<PackageMetadata> versions = packagesByNsURI.get(ePackage.getNsURI());
+        if (versions != null && versions.size() == 1) {
+            PackageMetadata only = versions.iterator().next();
+            if (only.getModelFingerprint() == null) {
+                return only;
+            }
+        }
+        return null;
     }
 
     /**
@@ -453,79 +556,94 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
             return null;
         }
 
-        String nsURI = ePackage.getNsURI();
-
         lock.writeLock().lock();
         try {
-            // Check if already registered
-            PackageMetadata existing = packagesByNsURI.get(nsURI);
-            if (existing != null) {
-                return existing;
+            // The fingerprint is computed BEFORE any existence check: registration is keyed
+            // by model version, not by nsURI. Same content -> dedupe onto the existing entry;
+            // diverging content under the same nsURI -> a coexisting second entry (never a
+            // silent no-op that would serve one version's objects with another's metadata).
+            String fp = fingerprintFor(ePackage);
+            PackageMetadata pkgMetadata = packagesByFingerprint.get(fp);
+            if (pkgMetadata == null) {
+                pkgMetadata = buildAndRegister(ePackage, fp, properties);
             }
-
-            // Create package metadata
-            PackageMetadata pkgMetadata = MetadataFactory.eINSTANCE.createPackageMetadata();
-            pkgMetadata.setEPackage(ePackage);
-            pkgMetadata.setNsURI(nsURI);
-
-            // Local, reproducible model fingerprint = join key to the EPackage registry.
-            // An externally supplied fingerprint (if any) arrives among the service
-            // properties below; it is captured as build context but NOT trusted here —
-            // the local computation is authoritative.
-            pkgMetadata.setModelFingerprint(fingerprintService.fingerprint(ePackage));
-
-            // Transient build context: capture the EPackage service properties (stringified).
-            // Not serialized (the feature is transient) — providers use it for relevance.
-            if (properties != null) {
-                for (Map.Entry<String, Object> entry : properties.entrySet()) {
-                    if (entry.getKey() != null && entry.getValue() != null) {
-                        pkgMetadata.getProperties().put(entry.getKey(), stringifyProperty(entry.getValue()));
-                    }
-                }
-            }
-
-            // Apply all aspect providers to package
-            for (AspectProvider provider : aspectProviders) {
-                PackageAspect aspect = provider.buildPackageAspect(pkgMetadata);
-                if (aspect != null) {
-                    aspect.setTypeId(provider.getAspectTypeId());
-                    pkgMetadata.getAspects().add(aspect);
-                }
-            }
-
-            // Process all EClasses
-            for (EClassifier classifier : ePackage.getEClassifiers()) {
-                if (classifier instanceof EClass eClass) {
-                    ClassMetadata classMetadata = buildClassMetadata(eClass, pkgMetadata);
-                    pkgMetadata.getClasses().add(classMetadata);
-                }
-            }
-
-            // Resolve cross-references (supertypes, target classes)
-            resolveReferences(pkgMetadata);
-
-            // Build profiles for each provider
-            buildProfilesForAllProviders(pkgMetadata);
-
-            // Add to registry and lookup maps
-            registry.getPackages().add(pkgMetadata);
-            packagesByNsURI.put(nsURI, pkgMetadata);
-
-            // Index the package
-            MetadataIndex idx = this.index;
-            if (idx != null) {
-                idx.indexPackage(pkgMetadata);
-            }
-
-            // Notify metadata handlers
-            for (MetadataHandler handler : metadataHandlers) {
-                handler.onPackageRegistered(pkgMetadata);
-            }
-
+            livenessByFingerprint.merge(fp, 1, Integer::sum);
             return pkgMetadata;
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    /**
+     * Builds the full PackageMetadata for a model version and adds it to the registry and
+     * all lookup structures. Must be called under the write lock with a freshly computed
+     * fingerprint. Does NOT touch whiteboard liveness — callers decide whether the entry
+     * counts as a registration (whiteboard path) or as a cached read (pull path).
+     */
+    private PackageMetadata buildAndRegister(EPackage ePackage, String fp, Map<String, Object> properties) {
+        String nsURI = ePackage.getNsURI();
+
+        // Create package metadata
+        PackageMetadata pkgMetadata = MetadataFactory.eINSTANCE.createPackageMetadata();
+        pkgMetadata.setEPackage(ePackage);
+        pkgMetadata.setNsURI(nsURI);
+
+        // Local, reproducible model fingerprint = join key to the EPackage registry.
+        // An externally supplied fingerprint (if any) arrives among the service
+        // properties below; it is captured as build context but NOT trusted here —
+        // the local computation is authoritative.
+        pkgMetadata.setModelFingerprint(fp);
+
+        // Transient build context: capture the EPackage service properties (stringified).
+        // Not serialized (the feature is transient) — providers use it for relevance.
+        if (properties != null) {
+            for (Map.Entry<String, Object> entry : properties.entrySet()) {
+                if (entry.getKey() != null && entry.getValue() != null) {
+                    pkgMetadata.getProperties().put(entry.getKey(), stringifyProperty(entry.getValue()));
+                }
+            }
+        }
+
+        // Apply all aspect providers to package
+        for (AspectProvider provider : aspectProviders) {
+            PackageAspect aspect = provider.buildPackageAspect(pkgMetadata);
+            if (aspect != null) {
+                aspect.setTypeId(provider.getAspectTypeId());
+                pkgMetadata.getAspects().add(aspect);
+            }
+        }
+
+        // Process all EClasses
+        for (EClassifier classifier : ePackage.getEClassifiers()) {
+            if (classifier instanceof EClass eClass) {
+                ClassMetadata classMetadata = buildClassMetadata(eClass, pkgMetadata);
+                pkgMetadata.getClasses().add(classMetadata);
+            }
+        }
+
+        // Resolve cross-references (supertypes, target classes)
+        resolveReferences(pkgMetadata);
+
+        // Build profiles for each provider
+        buildProfilesForAllProviders(pkgMetadata);
+
+        // Add to registry and lookup maps
+        registry.getPackages().add(pkgMetadata);
+        packagesByFingerprint.put(fp, pkgMetadata);
+        packagesByNsURI.computeIfAbsent(nsURI, k -> new CopyOnWriteArrayList<>()).add(pkgMetadata);
+
+        // Index the package
+        MetadataIndex idx = this.index;
+        if (idx != null) {
+            idx.indexPackage(pkgMetadata);
+        }
+
+        // Notify metadata handlers
+        for (MetadataHandler handler : metadataHandlers) {
+            handler.onPackageRegistered(pkgMetadata);
+        }
+
+        return pkgMetadata;
     }
 
     @Override
@@ -534,19 +652,41 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
             return;
         }
 
-        String nsURI = ePackage.getNsURI();
-
         lock.writeLock().lock();
         try {
-            PackageMetadata pkgMetadata = packagesByNsURI.get(nsURI);
+            // Liveness is per model version (fingerprint), never per nsURI: only the last
+            // whiteboard registration of THIS fingerprint removes the entry. Another live
+            // version of the same nsURI — or a pull-created cache entry, which carries no
+            // liveness count — is never affected by this unbind.
+            String fp = fingerprintFor(ePackage);
+            PackageMetadata pkgMetadata = packagesByFingerprint.get(fp);
+            if (pkgMetadata == null) {
+                return;
+            }
+            Integer count = livenessByFingerprint.get(fp);
+            if (count == null) {
+                return; // pull-created cache entry — there is no registration to undo
+            }
+            if (count > 1) {
+                livenessByFingerprint.put(fp, count - 1);
+                return;
+            }
+            livenessByFingerprint.remove(fp);
 
-            if (pkgMetadata != null) {
+            {
                 // Notify metadata handlers before removing
                 for (MetadataHandler handler : metadataHandlers) {
                     handler.onPackageUnregistered(pkgMetadata);
                 }
 
-                packagesByNsURI.remove(nsURI);
+                packagesByFingerprint.remove(fp);
+                List<PackageMetadata> versions = packagesByNsURI.get(pkgMetadata.getNsURI());
+                if (versions != null) {
+                    versions.remove(pkgMetadata);
+                    if (versions.isEmpty()) {
+                        packagesByNsURI.remove(pkgMetadata.getNsURI(), versions);
+                    }
+                }
 
                 // Remove from index first
                 MetadataIndex idx = this.index;
@@ -1040,7 +1180,10 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
     }
 
     private void rebuildLookupMaps() {
+        packagesByFingerprint.clear();
         packagesByNsURI.clear();
+        livenessByFingerprint.clear();
+        fingerprintByInstance.clear();
         classesByEClass.clear();
         featuresByEFeature.clear();
         operationsByEOperation.clear();
@@ -1050,7 +1193,19 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
         }
 
         for (PackageMetadata pkgMetadata : registry.getPackages()) {
-            packagesByNsURI.put(pkgMetadata.getNsURI(), pkgMetadata);
+            packagesByNsURI.computeIfAbsent(pkgMetadata.getNsURI(), k -> new CopyOnWriteArrayList<>())
+                    .add(pkgMetadata);
+            String fp = pkgMetadata.getModelFingerprint();
+            if (fp != null) {
+                packagesByFingerprint.put(fp, pkgMetadata);
+                // Loaded entries are live by construction: one unregister removes them,
+                // matching the pre-multi-version behavior for loaded registries.
+                livenessByFingerprint.put(fp, 1);
+                EPackage ePackage = pkgMetadata.getEPackage();
+                if (ePackage != null) {
+                    fingerprintByInstance.put(ePackage, fp);
+                }
+            }
 
             for (ClassMetadata classMetadata : pkgMetadata.getClasses()) {
                 EClass eClass = classMetadata.getEClass();

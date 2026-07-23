@@ -537,13 +537,31 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	int METADATA_SERVICE___GET_PACKAGE_METADATA__STRING = 1;
 
 	/**
+	 * The operation id for the '<em>Get Package Metadata</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_SERVICE___GET_PACKAGE_METADATA__EPACKAGE = 2;
+
+	/**
+	 * The operation id for the '<em>Get Package Metadata By Fingerprint</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_SERVICE___GET_PACKAGE_METADATA_BY_FINGERPRINT__STRING = 3;
+
+	/**
 	 * The operation id for the '<em>Get Class Metadata</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_CLASS_METADATA__ECLASS = 2;
+	int METADATA_SERVICE___GET_CLASS_METADATA__ECLASS = 4;
 
 	/**
 	 * The operation id for the '<em>Get Class Metadata By URI</em>' operation.
@@ -552,7 +570,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_CLASS_METADATA_BY_URI__STRING = 3;
+	int METADATA_SERVICE___GET_CLASS_METADATA_BY_URI__STRING = 5;
 
 	/**
 	 * The operation id for the '<em>Get Class Metadata By Name</em>' operation.
@@ -561,7 +579,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_CLASS_METADATA_BY_NAME__STRING_STRING = 4;
+	int METADATA_SERVICE___GET_CLASS_METADATA_BY_NAME__STRING_STRING = 6;
 
 	/**
 	 * The operation id for the '<em>Get Feature Metadata</em>' operation.
@@ -570,7 +588,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_FEATURE_METADATA__ESTRUCTURALFEATURE = 5;
+	int METADATA_SERVICE___GET_FEATURE_METADATA__ESTRUCTURALFEATURE = 7;
 
 	/**
 	 * The operation id for the '<em>Get Feature Metadata By URI</em>' operation.
@@ -579,7 +597,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_FEATURE_METADATA_BY_URI__STRING = 6;
+	int METADATA_SERVICE___GET_FEATURE_METADATA_BY_URI__STRING = 8;
 
 	/**
 	 * The operation id for the '<em>Get Feature Metadata By Name</em>' operation.
@@ -588,7 +606,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_FEATURE_METADATA_BY_NAME__STRING_STRING_STRING = 7;
+	int METADATA_SERVICE___GET_FEATURE_METADATA_BY_NAME__STRING_STRING_STRING = 9;
 
 	/**
 	 * The operation id for the '<em>Get Feature Metadata From Class</em>' operation.
@@ -597,7 +615,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_FEATURE_METADATA_FROM_CLASS__STRING_CLASSMETADATA = 8;
+	int METADATA_SERVICE___GET_FEATURE_METADATA_FROM_CLASS__STRING_CLASSMETADATA = 10;
 
 	/**
 	 * The operation id for the '<em>Get Package Aspect</em>' operation.
@@ -606,7 +624,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_PACKAGE_ASPECT__EPACKAGE_STRING = 9;
+	int METADATA_SERVICE___GET_PACKAGE_ASPECT__EPACKAGE_STRING = 11;
 
 	/**
 	 * The operation id for the '<em>Get Class Aspect</em>' operation.
@@ -615,7 +633,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_CLASS_ASPECT__ECLASS_STRING = 10;
+	int METADATA_SERVICE___GET_CLASS_ASPECT__ECLASS_STRING = 12;
 
 	/**
 	 * The operation id for the '<em>Get Feature Aspect</em>' operation.
@@ -624,7 +642,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_FEATURE_ASPECT__ESTRUCTURALFEATURE_STRING = 11;
+	int METADATA_SERVICE___GET_FEATURE_ASPECT__ESTRUCTURALFEATURE_STRING = 13;
 
 	/**
 	 * The operation id for the '<em>Get Operation Metadata</em>' operation.
@@ -633,7 +651,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_OPERATION_METADATA__EOPERATION = 12;
+	int METADATA_SERVICE___GET_OPERATION_METADATA__EOPERATION = 14;
 
 	/**
 	 * The operation id for the '<em>Get Operation Metadata By URI</em>' operation.
@@ -642,7 +660,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_OPERATION_METADATA_BY_URI__STRING = 13;
+	int METADATA_SERVICE___GET_OPERATION_METADATA_BY_URI__STRING = 15;
 
 	/**
 	 * The operation id for the '<em>Get Operation Metadata From Class</em>' operation.
@@ -651,7 +669,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_OPERATION_METADATA_FROM_CLASS__STRING_CLASSMETADATA = 14;
+	int METADATA_SERVICE___GET_OPERATION_METADATA_FROM_CLASS__STRING_CLASSMETADATA = 16;
 
 	/**
 	 * The operation id for the '<em>Get Operation Aspect</em>' operation.
@@ -660,7 +678,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_OPERATION_ASPECT__EOPERATION_STRING = 15;
+	int METADATA_SERVICE___GET_OPERATION_ASPECT__EOPERATION_STRING = 17;
 
 	/**
 	 * The operation id for the '<em>Get Package Profile</em>' operation.
@@ -669,7 +687,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_PACKAGE_PROFILE__EPACKAGE_STRING = 16;
+	int METADATA_SERVICE___GET_PACKAGE_PROFILE__EPACKAGE_STRING = 18;
 
 	/**
 	 * The operation id for the '<em>Get Package Profile By Ns URI</em>' operation.
@@ -678,7 +696,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_PACKAGE_PROFILE_BY_NS_URI__STRING_STRING = 17;
+	int METADATA_SERVICE___GET_PACKAGE_PROFILE_BY_NS_URI__STRING_STRING = 19;
 
 	/**
 	 * The operation id for the '<em>Get Class Profile</em>' operation.
@@ -687,7 +705,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_CLASS_PROFILE__ECLASS_STRING = 18;
+	int METADATA_SERVICE___GET_CLASS_PROFILE__ECLASS_STRING = 20;
 
 	/**
 	 * The operation id for the '<em>Get Class Profile By URI</em>' operation.
@@ -696,7 +714,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_CLASS_PROFILE_BY_URI__STRING_STRING = 19;
+	int METADATA_SERVICE___GET_CLASS_PROFILE_BY_URI__STRING_STRING = 21;
 
 	/**
 	 * The operation id for the '<em>Get Registry</em>' operation.
@@ -705,7 +723,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE___GET_REGISTRY = 20;
+	int METADATA_SERVICE___GET_REGISTRY = 22;
 
 	/**
 	 * The number of operations of the '<em>Metadata Service</em>' class.
@@ -714,7 +732,7 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE_OPERATION_COUNT = 21;
+	int METADATA_SERVICE_OPERATION_COUNT = 23;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.model.metadata.api.MetadataHandler <em>Metadata Handler</em>}' class.
@@ -807,6 +825,24 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @ordered
 	 */
 	int METADATA_WHITEBOARD___GET_PACKAGE_METADATA__STRING = METADATA_SERVICE___GET_PACKAGE_METADATA__STRING;
+
+	/**
+	 * The operation id for the '<em>Get Package Metadata</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_WHITEBOARD___GET_PACKAGE_METADATA__EPACKAGE = METADATA_SERVICE___GET_PACKAGE_METADATA__EPACKAGE;
+
+	/**
+	 * The operation id for the '<em>Get Package Metadata By Fingerprint</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_WHITEBOARD___GET_PACKAGE_METADATA_BY_FINGERPRINT__STRING = METADATA_SERVICE___GET_PACKAGE_METADATA_BY_FINGERPRINT__STRING;
 
 	/**
 	 * The operation id for the '<em>Get Class Metadata</em>' operation.
@@ -1447,6 +1483,26 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @generated
 	 */
 	EOperation getMetadataService__GetPackageMetadata__String();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService#getPackageMetadata(org.eclipse.emf.ecore.EPackage) <em>Get Package Metadata</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Get Package Metadata</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataService#getPackageMetadata(org.eclipse.emf.ecore.EPackage)
+	 * @generated
+	 */
+	EOperation getMetadataService__GetPackageMetadata__EPackage();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService#getPackageMetadataByFingerprint(java.lang.String) <em>Get Package Metadata By Fingerprint</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Get Package Metadata By Fingerprint</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataService#getPackageMetadataByFingerprint(java.lang.String)
+	 * @generated
+	 */
+	EOperation getMetadataService__GetPackageMetadataByFingerprint__String();
 
 	/**
 	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService#getClassMetadata(org.eclipse.emf.ecore.EClass) <em>Get Class Metadata</em>}' operation.
@@ -2132,6 +2188,22 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EOperation METADATA_SERVICE___GET_PACKAGE_METADATA__STRING = eINSTANCE.getMetadataService__GetPackageMetadata__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Get Package Metadata</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_SERVICE___GET_PACKAGE_METADATA__EPACKAGE = eINSTANCE.getMetadataService__GetPackageMetadata__EPackage();
+
+		/**
+		 * The meta object literal for the '<em><b>Get Package Metadata By Fingerprint</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_SERVICE___GET_PACKAGE_METADATA_BY_FINGERPRINT__STRING = eINSTANCE.getMetadataService__GetPackageMetadataByFingerprint__String();
 
 		/**
 		 * The meta object literal for the '<em><b>Get Class Metadata</b></em>' operation.

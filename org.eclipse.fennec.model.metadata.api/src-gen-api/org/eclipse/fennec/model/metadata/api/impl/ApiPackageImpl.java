@@ -415,7 +415,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetClassMetadata__EClass() {
+	public EOperation getMetadataService__GetPackageMetadata__EPackage() {
 		return metadataServiceEClass.getEOperations().get(2);
 	}
 
@@ -425,7 +425,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetClassMetadataByURI__String() {
+	public EOperation getMetadataService__GetPackageMetadataByFingerprint__String() {
 		return metadataServiceEClass.getEOperations().get(3);
 	}
 
@@ -435,7 +435,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetClassMetadataByName__String_String() {
+	public EOperation getMetadataService__GetClassMetadata__EClass() {
 		return metadataServiceEClass.getEOperations().get(4);
 	}
 
@@ -445,7 +445,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetFeatureMetadata__EStructuralFeature() {
+	public EOperation getMetadataService__GetClassMetadataByURI__String() {
 		return metadataServiceEClass.getEOperations().get(5);
 	}
 
@@ -455,7 +455,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetFeatureMetadataByURI__String() {
+	public EOperation getMetadataService__GetClassMetadataByName__String_String() {
 		return metadataServiceEClass.getEOperations().get(6);
 	}
 
@@ -465,7 +465,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetFeatureMetadataByName__String_String_String() {
+	public EOperation getMetadataService__GetFeatureMetadata__EStructuralFeature() {
 		return metadataServiceEClass.getEOperations().get(7);
 	}
 
@@ -475,7 +475,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetFeatureMetadataFromClass__String_ClassMetadata() {
+	public EOperation getMetadataService__GetFeatureMetadataByURI__String() {
 		return metadataServiceEClass.getEOperations().get(8);
 	}
 
@@ -485,7 +485,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetPackageAspect__EPackage_String() {
+	public EOperation getMetadataService__GetFeatureMetadataByName__String_String_String() {
 		return metadataServiceEClass.getEOperations().get(9);
 	}
 
@@ -495,7 +495,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetClassAspect__EClass_String() {
+	public EOperation getMetadataService__GetFeatureMetadataFromClass__String_ClassMetadata() {
 		return metadataServiceEClass.getEOperations().get(10);
 	}
 
@@ -505,7 +505,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetFeatureAspect__EStructuralFeature_String() {
+	public EOperation getMetadataService__GetPackageAspect__EPackage_String() {
 		return metadataServiceEClass.getEOperations().get(11);
 	}
 
@@ -515,7 +515,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetOperationMetadata__EOperation() {
+	public EOperation getMetadataService__GetClassAspect__EClass_String() {
 		return metadataServiceEClass.getEOperations().get(12);
 	}
 
@@ -525,7 +525,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetOperationMetadataByURI__String() {
+	public EOperation getMetadataService__GetFeatureAspect__EStructuralFeature_String() {
 		return metadataServiceEClass.getEOperations().get(13);
 	}
 
@@ -535,7 +535,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetOperationMetadataFromClass__String_ClassMetadata() {
+	public EOperation getMetadataService__GetOperationMetadata__EOperation() {
 		return metadataServiceEClass.getEOperations().get(14);
 	}
 
@@ -545,7 +545,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetOperationAspect__EOperation_String() {
+	public EOperation getMetadataService__GetOperationMetadataByURI__String() {
 		return metadataServiceEClass.getEOperations().get(15);
 	}
 
@@ -555,7 +555,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetPackageProfile__EPackage_String() {
+	public EOperation getMetadataService__GetOperationMetadataFromClass__String_ClassMetadata() {
 		return metadataServiceEClass.getEOperations().get(16);
 	}
 
@@ -565,7 +565,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetPackageProfileByNsURI__String_String() {
+	public EOperation getMetadataService__GetOperationAspect__EOperation_String() {
 		return metadataServiceEClass.getEOperations().get(17);
 	}
 
@@ -575,7 +575,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetClassProfile__EClass_String() {
+	public EOperation getMetadataService__GetPackageProfile__EPackage_String() {
 		return metadataServiceEClass.getEOperations().get(18);
 	}
 
@@ -585,7 +585,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetClassProfileByURI__String_String() {
+	public EOperation getMetadataService__GetPackageProfileByNsURI__String_String() {
 		return metadataServiceEClass.getEOperations().get(19);
 	}
 
@@ -595,8 +595,28 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
-	public EOperation getMetadataService__GetRegistry() {
+	public EOperation getMetadataService__GetClassProfile__EClass_String() {
 		return metadataServiceEClass.getEOperations().get(20);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EOperation getMetadataService__GetClassProfileByURI__String_String() {
+		return metadataServiceEClass.getEOperations().get(21);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EOperation getMetadataService__GetRegistry() {
+		return metadataServiceEClass.getEOperations().get(22);
 	}
 
 	/**
@@ -916,6 +936,8 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 		metadataServiceEClass = createEClass(METADATA_SERVICE);
 		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_INDEX_READER);
 		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_PACKAGE_METADATA__STRING);
+		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_PACKAGE_METADATA__EPACKAGE);
+		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_PACKAGE_METADATA_BY_FINGERPRINT__STRING);
 		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_CLASS_METADATA__ECLASS);
 		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_CLASS_METADATA_BY_URI__STRING);
 		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_CLASS_METADATA_BY_NAME__STRING_STRING);
@@ -1080,6 +1102,12 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 
 		op = initEOperation(getMetadataService__GetPackageMetadata__String(), theMetadataPackage.getPackageMetadata(), "getPackageMetadata", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "nsURI", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getMetadataService__GetPackageMetadata__EPackage(), theMetadataPackage.getPackageMetadata(), "getPackageMetadata", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEPackage(), "ePackage", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getMetadataService__GetPackageMetadataByFingerprint__String(), theMetadataPackage.getPackageMetadata(), "getPackageMetadataByFingerprint", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "fingerprint", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = initEOperation(getMetadataService__GetClassMetadata__EClass(), theMetadataPackage.getClassMetadata(), "getClassMetadata", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEClass(), "eClass", 0, 1, IS_UNIQUE, IS_ORDERED);

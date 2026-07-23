@@ -154,7 +154,7 @@
   <!-- ==================== Consumer Service Interface ==================== -->
   <eClassifiers xsi:type="ecore:EClass" name="MetadataService" abstract="true" interface="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Consumer-facing read-only interface for accessing pre-computed model metadata. Provides metadata lookups by various criteria, aspect access by type ID, profile access for pre-computed configurations, and index reader access for fast queries. Does NOT provide lifecycle management (register/unregister) — use MetadataWhiteboard for that. In OSGi, consumers inject this interface to access metadata without admin privileges."/>
+      <details key="documentation" value="Consumer-facing read-only interface for accessing pre-computed model metadata. Provides metadata lookups by various criteria, aspect access by type ID, profile access for pre-computed configurations, and index reader access for fast queries. Does NOT provide lifecycle management (register/unregister) — use MetadataWhiteboard for that. In OSGi, consumers inject this interface to access metadata without admin privileges. The only exception to strict read-only semantics is getPackageMetadata(EPackage): it resolves via the model fingerprint and transparently builds-and-caches on a miss (deterministic, idempotent — a memoized read, not lifecycle management), so stateless consumers need no admin interface."/>
     </eAnnotations>
     <eOperations name="getIndexReader" eType="#//MetadataIndexReader">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -167,6 +167,18 @@
         <details key="documentation" value="Get metadata for a registered EPackage by its namespace URI. Returns null if the package is not registered."/>
       </eAnnotations>
       <eParameters name="nsURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getPackageMetadata" eType="ecore:EClass metadata.ecore#//PackageMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get metadata for exactly this EPackage instance's model version, resolved via its canonical model fingerprint (computed locally, memoized per instance identity). On a cache miss the metadata is built from the passed instance and stored under its fingerprint (resolve-or-build) — no prior registration is required, enabling stateless consumers that receive the EPackage as a call parameter. Deterministic and idempotent: same model content always yields the same entry; two diverging versions of the same nsURI resolve to two distinct entries. Returns null only if ePackage is null."/>
+      </eAnnotations>
+      <eParameters name="ePackage" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EPackage"/>
+    </eOperations>
+    <eOperations name="getPackageMetadataByFingerprint" eType="ecore:EClass metadata.ecore#//PackageMetadata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Get metadata for a model version by its canonical model fingerprint (see PackageMetadata.modelFingerprint). Pure lookup — never builds. Returns null if no model version with this fingerprint is known. Intended for callers that hold a fingerprint instead of an EPackage instance (e.g. replication or cross-registry joins); an externally supplied fingerprint is only ever a lookup key here, never trusted to create state."/>
+      </eAnnotations>
+      <eParameters name="fingerprint" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <!-- Class metadata access -->
     <eOperations name="getClassMetadata" eType="ecore:EClass metadata.ecore#//ClassMetadata">

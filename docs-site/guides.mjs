@@ -13,6 +13,7 @@ export const GUIDES = [
   { file: 'model-metadata-purpose.md', slug: 'overview', title: 'Overview' },
   { file: 'mediator-and-fingerprinting.md', slug: 'mediator', title: 'Mediator & Fingerprinting' },
   { file: 'model-metadata-architecture.md', slug: 'architecture', title: 'Architecture' },
+  { file: 'big-picture-atlas-metadata-codec.md', slug: 'big-picture', title: 'Big Picture: Atlas → Metadata → Codec' },
 ];
 
 export const EXAMPLES = [];

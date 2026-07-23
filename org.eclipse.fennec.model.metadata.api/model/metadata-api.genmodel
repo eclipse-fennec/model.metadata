@@ -83,6 +83,12 @@
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getPackageMetadata">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getPackageMetadata/nsURI"/>
       </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getPackageMetadata.1">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getPackageMetadata.1/ePackage"/>
+      </genOperations>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getPackageMetadataByFingerprint">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getPackageMetadataByFingerprint/fingerprint"/>
+      </genOperations>
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getClassMetadata">
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getClassMetadata/eClass"/>
       </genOperations>

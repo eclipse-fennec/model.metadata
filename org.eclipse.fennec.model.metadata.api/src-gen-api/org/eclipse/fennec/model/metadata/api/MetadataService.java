@@ -37,7 +37,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * Consumer-facing read-only interface for accessing pre-computed model metadata. Provides metadata lookups by various criteria, aspect access by type ID, profile access for pre-computed configurations, and index reader access for fast queries. Does NOT provide lifecycle management (register/unregister) — use MetadataWhiteboard for that. In OSGi, consumers inject this interface to access metadata without admin privileges.
+ * Consumer-facing read-only interface for accessing pre-computed model metadata. Provides metadata lookups by various criteria, aspect access by type ID, profile access for pre-computed configurations, and index reader access for fast queries. Does NOT provide lifecycle management (register/unregister) — use MetadataWhiteboard for that. In OSGi, consumers inject this interface to access metadata without admin privileges. The only exception to strict read-only semantics is getPackageMetadata(EPackage): it resolves via the model fingerprint and transparently builds-and-caches on a miss (deterministic, idempotent — a memoized read, not lifecycle management), so stateless consumers need no admin interface.
  * <!-- end-model-doc -->
  *
  *
@@ -68,6 +68,28 @@ public interface MetadataService {
 	 * @generated
 	 */
 	PackageMetadata getPackageMetadata(String nsURI);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Get metadata for exactly this EPackage instance's model version, resolved via its canonical model fingerprint (computed locally, memoized per instance identity). On a cache miss the metadata is built from the passed instance and stored under its fingerprint (resolve-or-build) — no prior registration is required, enabling stateless consumers that receive the EPackage as a call parameter. Deterministic and idempotent: same model content always yields the same entry; two diverging versions of the same nsURI resolve to two distinct entries. Returns null only if ePackage is null.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	PackageMetadata getPackageMetadata(EPackage ePackage);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Get metadata for a model version by its canonical model fingerprint (see PackageMetadata.modelFingerprint). Pure lookup — never builds. Returns null if no model version with this fingerprint is known. Intended for callers that hold a fingerprint instead of an EPackage instance (e.g. replication or cross-registry joins); an externally supplied fingerprint is only ever a lookup key here, never trusted to create state.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	PackageMetadata getPackageMetadataByFingerprint(String fingerprint);
 
 	/**
 	 * <!-- begin-user-doc -->
