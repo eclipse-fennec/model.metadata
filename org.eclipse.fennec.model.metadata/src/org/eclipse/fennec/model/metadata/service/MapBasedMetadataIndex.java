@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -48,14 +49,25 @@ import org.eclipse.fennec.model.metadata.api.MetadataIndex;
  */
 public class MapBasedMetadataIndex implements MetadataIndex {
 
-    // Primary indexes
-    private final Map<String, ClassMetadata> classesByURI = new ConcurrentHashMap<>();
-    private final Map<String, FeatureMetadata> featuresByURI = new ConcurrentHashMap<>();
-    private final Map<String, OperationMetadata> operationsByURI = new ConcurrentHashMap<>();
+    // All indexes are multi-valued (key -> versions). Under same-nsURI multi-version
+    // registration two diverging versions of a package produce colliding keys: identical
+    // typeURI ("nsURI#//Class"), identical "nsURI::name"/"nsURI::instanceClassName"
+    // composites, and identical feature/operation URIs for features present in both. A
+    // single-valued map would (a) last-wins overwrite the entry on register and (b) delete
+    // the shared entry entirely when EITHER version unregisters, breaking lookups for the
+    // surviving version. Storing a per-key list keeps each version's entry independent:
+    // register appends, unregister removes only that instance, and single-result lookups
+    // return the most recently indexed version (best effort, mirroring the service's
+    // newest-version resolution for name/URI lookups).
 
-    // Composite key indexes: "nsURI::name" -> ClassMetadata
-    private final Map<String, ClassMetadata> classesByNsURIAndName = new ConcurrentHashMap<>();
-    private final Map<String, ClassMetadata> classesByNsURIAndInstanceClassName = new ConcurrentHashMap<>();
+    // Primary indexes
+    private final Map<String, List<ClassMetadata>> classesByURI = new ConcurrentHashMap<>();
+    private final Map<String, List<FeatureMetadata>> featuresByURI = new ConcurrentHashMap<>();
+    private final Map<String, List<OperationMetadata>> operationsByURI = new ConcurrentHashMap<>();
+
+    // Composite key indexes: "nsURI::name" -> versions
+    private final Map<String, List<ClassMetadata>> classesByNsURIAndName = new ConcurrentHashMap<>();
+    private final Map<String, List<ClassMetadata>> classesByNsURIAndInstanceClassName = new ConcurrentHashMap<>();
 
     // Global indexes for cross-package queries: name -> List<ClassMetadata>
     private final Map<String, List<ClassMetadata>> classesByName = new ConcurrentHashMap<>();
@@ -91,27 +103,27 @@ public class MapBasedMetadataIndex implements MetadataIndex {
 
         // Index by URI
         if (typeURI != null) {
-            classesByURI.put(typeURI, classMetadata);
+            putMulti(classesByURI, typeURI, classMetadata);
         }
 
         // Index by nsURI + name
         if (nsURI != null && name != null) {
-            classesByNsURIAndName.put(compositeKey(nsURI, name), classMetadata);
+            putMulti(classesByNsURIAndName, compositeKey(nsURI, name), classMetadata);
         }
 
         // Index by nsURI + instanceClassName
         if (nsURI != null && instanceClassName != null) {
-            classesByNsURIAndInstanceClassName.put(compositeKey(nsURI, instanceClassName), classMetadata);
+            putMulti(classesByNsURIAndInstanceClassName, compositeKey(nsURI, instanceClassName), classMetadata);
         }
 
         // Index globally by name
         if (name != null) {
-            classesByName.computeIfAbsent(name, k -> new ArrayList<>()).add(classMetadata);
+            putMulti(classesByName, name, classMetadata);
         }
 
         // Index globally by instanceClassName
         if (instanceClassName != null) {
-            classesByInstanceClassName.computeIfAbsent(instanceClassName, k -> new ArrayList<>()).add(classMetadata);
+            putMulti(classesByInstanceClassName, instanceClassName, classMetadata);
         }
 
         // Index all features
@@ -133,7 +145,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         EStructuralFeature eFeature = featureMetadata.getEFeature();
         if (eFeature != null) {
             String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eFeature).toString();
-            featuresByURI.put(uri, featureMetadata);
+            putMulti(featuresByURI, uri, featureMetadata);
         }
     }
 
@@ -145,7 +157,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         EOperation eOperation = operationMetadata.getEOperation();
         if (eOperation != null) {
             String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eOperation).toString();
-            operationsByURI.put(uri, operationMetadata);
+            putMulti(operationsByURI, uri, operationMetadata);
         }
     }
 
@@ -177,37 +189,26 @@ public class MapBasedMetadataIndex implements MetadataIndex {
             : null;
         String instanceClassName = eClass != null ? eClass.getInstanceClassName() : null;
 
-        // Remove from URI index
+        // Remove from URI index (only this version's entry — a surviving same-nsURI
+        // version keeps its own, structurally identical, typeURI entry)
         if (typeURI != null) {
-            classesByURI.remove(typeURI);
+            removeMulti(classesByURI, typeURI, classMetadata);
         }
 
         // Remove from composite key indexes
         if (nsURI != null && name != null) {
-            classesByNsURIAndName.remove(compositeKey(nsURI, name));
+            removeMulti(classesByNsURIAndName, compositeKey(nsURI, name), classMetadata);
         }
         if (nsURI != null && instanceClassName != null) {
-            classesByNsURIAndInstanceClassName.remove(compositeKey(nsURI, instanceClassName));
+            removeMulti(classesByNsURIAndInstanceClassName, compositeKey(nsURI, instanceClassName), classMetadata);
         }
 
         // Remove from global indexes
         if (name != null) {
-            List<ClassMetadata> list = classesByName.get(name);
-            if (list != null) {
-                list.remove(classMetadata);
-                if (list.isEmpty()) {
-                    classesByName.remove(name);
-                }
-            }
+            removeMulti(classesByName, name, classMetadata);
         }
         if (instanceClassName != null) {
-            List<ClassMetadata> list = classesByInstanceClassName.get(instanceClassName);
-            if (list != null) {
-                list.remove(classMetadata);
-                if (list.isEmpty()) {
-                    classesByInstanceClassName.remove(instanceClassName);
-                }
-            }
+            removeMulti(classesByInstanceClassName, instanceClassName, classMetadata);
         }
 
         // Remove all features
@@ -229,7 +230,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         EStructuralFeature eFeature = featureMetadata.getEFeature();
         if (eFeature != null) {
             String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eFeature).toString();
-            featuresByURI.remove(uri);
+            removeMulti(featuresByURI, uri, featureMetadata);
         }
     }
 
@@ -241,7 +242,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         EOperation eOperation = operationMetadata.getEOperation();
         if (eOperation != null) {
             String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eOperation).toString();
-            operationsByURI.remove(uri);
+            removeMulti(operationsByURI, uri, operationMetadata);
         }
     }
 
@@ -265,7 +266,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         if (nsURI == null || instanceClassName == null) {
             return null;
         }
-        return classesByNsURIAndInstanceClassName.get(compositeKey(nsURI, instanceClassName));
+        return getLast(classesByNsURIAndInstanceClassName, compositeKey(nsURI, instanceClassName));
     }
 
     @Override
@@ -282,7 +283,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         if (nsURI == null || className == null) {
             return null;
         }
-        return classesByNsURIAndName.get(compositeKey(nsURI, className));
+        return getLast(classesByNsURIAndName, compositeKey(nsURI, className));
     }
 
     @Override
@@ -299,7 +300,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         if (uri == null) {
             return null;
         }
-        return classesByURI.get(uri);
+        return getLast(classesByURI, uri);
     }
 
     @Override
@@ -307,7 +308,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         if (uri == null) {
             return null;
         }
-        return featuresByURI.get(uri);
+        return getLast(featuresByURI, uri);
     }
 
     @Override
@@ -316,10 +317,12 @@ public class MapBasedMetadataIndex implements MetadataIndex {
             return new BasicEList<>();
         }
         List<ClassMetadata> results = new ArrayList<>();
-        for (ClassMetadata classMetadata : classesByURI.values()) {
-            EClass eClass = classMetadata.getEClass();
-            if (eClass != null && hasAnnotation(eClass.getEAnnotation(annotationSource), key, value)) {
-                results.add(classMetadata);
+        for (List<ClassMetadata> versions : classesByURI.values()) {
+            for (ClassMetadata classMetadata : versions) {
+                EClass eClass = classMetadata.getEClass();
+                if (eClass != null && hasAnnotation(eClass.getEAnnotation(annotationSource), key, value)) {
+                    results.add(classMetadata);
+                }
             }
         }
         return new BasicEList<>(results);
@@ -331,10 +334,12 @@ public class MapBasedMetadataIndex implements MetadataIndex {
             return new BasicEList<>();
         }
         List<FeatureMetadata> results = new ArrayList<>();
-        for (FeatureMetadata featureMetadata : featuresByURI.values()) {
-            EStructuralFeature eFeature = featureMetadata.getEFeature();
-            if (eFeature != null && hasAnnotation(eFeature.getEAnnotation(annotationSource), key, value)) {
-                results.add(featureMetadata);
+        for (List<FeatureMetadata> versions : featuresByURI.values()) {
+            for (FeatureMetadata featureMetadata : versions) {
+                EStructuralFeature eFeature = featureMetadata.getEFeature();
+                if (eFeature != null && hasAnnotation(eFeature.getEAnnotation(annotationSource), key, value)) {
+                    results.add(featureMetadata);
+                }
             }
         }
         return new BasicEList<>(results);
@@ -345,7 +350,7 @@ public class MapBasedMetadataIndex implements MetadataIndex {
         if (uri == null) {
             return null;
         }
-        return operationsByURI.get(uri);
+        return getLast(operationsByURI, uri);
     }
 
     @Override
@@ -354,10 +359,12 @@ public class MapBasedMetadataIndex implements MetadataIndex {
             return new BasicEList<>();
         }
         List<OperationMetadata> results = new ArrayList<>();
-        for (OperationMetadata operationMetadata : operationsByURI.values()) {
-            EOperation eOperation = operationMetadata.getEOperation();
-            if (eOperation != null && hasAnnotation(eOperation.getEAnnotation(annotationSource), key, value)) {
-                results.add(operationMetadata);
+        for (List<OperationMetadata> versions : operationsByURI.values()) {
+            for (OperationMetadata operationMetadata : versions) {
+                EOperation eOperation = operationMetadata.getEOperation();
+                if (eOperation != null && hasAnnotation(eOperation.getEAnnotation(annotationSource), key, value)) {
+                    results.add(operationMetadata);
+                }
             }
         }
         return new BasicEList<>(results);
@@ -372,6 +379,48 @@ public class MapBasedMetadataIndex implements MetadataIndex {
      */
     private String compositeKey(String nsURI, String name) {
         return nsURI + "::" + name;
+    }
+
+    /**
+     * Appends a value to the per-key version list, creating the list on first use. The
+     * list is a {@link CopyOnWriteArrayList} so concurrent readers (index lookups are
+     * lock-free) always see a consistent snapshot while writers mutate under the service's
+     * write lock.
+     */
+    private static <T> void putMulti(Map<String, List<T>> map, String key, T value) {
+        map.computeIfAbsent(key, k -> new CopyOnWriteArrayList<>()).add(value);
+    }
+
+    /**
+     * Returns the most recently indexed value for a key, or {@code null} if none. Single-
+     * result lookups pick the newest version — the same best-effort resolution the service
+     * applies to name/URI lookups under same-nsURI multi-version registration. Iterates to
+     * the last element (rather than index access) so a concurrent removal cannot race.
+     */
+    private static <T> T getLast(Map<String, List<T>> map, String key) {
+        List<T> list = map.get(key);
+        if (list == null) {
+            return null;
+        }
+        T last = null;
+        for (T value : list) {
+            last = value;
+        }
+        return last;
+    }
+
+    /**
+     * Removes a single value from the per-key version list, dropping the key when its last
+     * version is gone. Removing one version never affects a surviving same-key version.
+     */
+    private static <T> void removeMulti(Map<String, List<T>> map, String key, T value) {
+        List<T> list = map.get(key);
+        if (list != null) {
+            list.remove(value);
+            if (list.isEmpty()) {
+                map.remove(key);
+            }
+        }
     }
 
     /**

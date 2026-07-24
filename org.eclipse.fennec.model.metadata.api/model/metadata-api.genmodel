@@ -157,6 +157,9 @@
         <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getClassProfileByURI/typeId"/>
       </genOperations>
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getRegistry"/>
+      <genOperations ecoreOperation="metadata-api.ecore#//MetadataService/getPackageMetadataVersions">
+        <genParameters ecoreParameter="metadata-api.ecore#//MetadataService/getPackageMetadataVersions/nsURI"/>
+      </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="metadata-api.ecore#//MetadataHandler">
       <genOperations ecoreOperation="metadata-api.ecore#//MetadataHandler/onPackageRegistered">

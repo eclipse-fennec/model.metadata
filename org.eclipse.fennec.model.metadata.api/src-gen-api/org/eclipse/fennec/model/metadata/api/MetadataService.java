@@ -12,6 +12,8 @@
  */
 package org.eclipse.fennec.model.metadata.api;
 
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
@@ -299,5 +301,16 @@ public interface MetadataService {
 	 * @generated
 	 */
 	MetadataRegistry getRegistry();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Get all registered model versions for a namespace URI, in registration order (oldest first, newest last — the same order getPackageMetadata(String) draws its best-effort newest from). Returns an empty list if the nsURI is unknown or null. The registry keeps every version of an nsURI (diverging same-nsURI content coexists, keyed by model fingerprint); this operation exposes the full candidate set so consumers that must handle same-nsURI multi-version (e.g. stored documents that outlive a model version) can enumerate versions instead of re-deriving registry knowledge. Purely additive and non-mutating: version SELECTION policy (strictness, pinning, trial rules) stays with the consumer — this only exposes the facts the registry already owns.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	EList<PackageMetadata> getPackageMetadataVersions(String nsURI);
 
 } // MetadataService

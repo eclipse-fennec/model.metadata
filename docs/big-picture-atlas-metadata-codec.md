@@ -151,13 +151,23 @@ Key properties:
   pre-build its metadata so the first codec run pays no build cost — but nothing is
   correctness-relevant about it anymore.
 - nsURI-based lookups (`getPackageMetadata(String)` & friends) stay for REST-ish
-  consumers, documented as **best effort** under ambiguity.
+  consumers, documented as **best effort** under ambiguity — they return the newest
+  registered version. A consumer that must handle same-nsURI multi-version itself
+  enumerates the full candidate set via `getPackageMetadataVersions(String)` (all
+  versions, oldest→newest; the tail is what the best-effort getter serves) and applies
+  its own selection policy. The service exposes the facts; selection stays with the
+  caller (issue #16).
+- **Index integrity holds one level down too.** Two diverging same-nsURI versions
+  collide on identical structural keys inside the `MetadataIndex` (same `typeURI`,
+  same `nsURI::name`). The index is multi-valued internally, so unregistering one
+  version leaves every other live version's URI/name lookups intact — the atlas#156
+  signature, fixed at the index level (issue #16).
 
 ## Who does what
 
 | Party | What | Where it is tracked |
 |---|---|---|
-| **This repo** (glue) | WP6: registry keyed by `modelFingerprint` (nsURI = secondary index), `registerPackage` dedupes by fingerprint instead of first-wins, unregister = per-fingerprint liveness (never cross-version removal), new API `getPackageMetadata(EPackage)` (resolve-or-build) + `getPackageMetadataByFingerprint(String)`. Acceptance: the multi-version repro test from atlas#156. | [model.metadata#15](https://github.com/eclipse-fennec/model.metadata/issues/15) (parent: [#9](https://github.com/eclipse-fennec/model.metadata/issues/9)) |
+| **This repo** (glue) | WP6 **done**: registry keyed by `modelFingerprint` (nsURI = secondary index), `registerPackage` dedupes by fingerprint instead of first-wins, unregister = per-fingerprint liveness (never cross-version removal), new API `getPackageMetadata(EPackage)` (resolve-or-build) + `getPackageMetadataByFingerprint(String)`. Multi-version API completion **done**: `getPackageMetadataVersions(String)` enumerates all versions per nsURI, and the `MetadataIndex` is multi-valued internally so one version's unregister no longer breaks class-URI/name lookups for a surviving version. Acceptance: the multi-version repro test from atlas#156, extended with the index-survivor and versions-enumeration cases. | [model.metadata#15](https://github.com/eclipse-fennec/model.metadata/issues/15), [#16](https://github.com/eclipse-fennec/model.metadata/issues/16) (parent: [#9](https://github.com/eclipse-fennec/model.metadata/issues/9)) |
 | **Model Atlas** | (a) Fix its own nsURI-keyed registration map so a second version per nsURI is actually published; (b) optionally emit `fennec.model.fingerprint` as a service property (cross-check only); (c) independently: the dedicated fingerprint field in the EObject registry for orphan housekeeping. **Timing:** coordinated separately — ongoing developments there must not be disrupted; to be scheduled via the weekly. | dedicated ticket in model.atlas (to be created; referenced from [model.atlas#156](https://github.com/eclipse-fennec/model.atlas/issues/156)) |
 | **Codec** | (a) Drop its bundled copy of `org.eclipse.fennec.model.metadata` and build against this repo's `…metadata.api` + `…metadata` bundles (same Java packages — imports stay unchanged, it is buildpath work); (b) `CodecAspectProvider` implements the new abstract `buildOperationAspect` (may return `null`); (c) `CodecResource.requirePackageRegistered` switches from `getPackageMetadata(nsURI)` to `getPackageMetadata(ePackage)` — the "register first" precondition disappears; (d) audit `TypeDiscriminatorService` for nsURI keying. | dedicated tickets in the codec repo (to be created) |
 

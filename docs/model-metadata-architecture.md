@@ -372,7 +372,10 @@ Main service interface for metadata lookup. This is the interface used by consum
 ```
 MetadataService (interface)
   // Package operations (read-only)
-  +getPackageMetadata(nsURI: String): PackageMetadata
+  +getPackageMetadata(nsURI: String): PackageMetadata          // best effort: newest version for the nsURI
+  +getPackageMetadata(ePackage: EPackage): PackageMetadata     // exact version by fingerprint (resolve-or-build)
+  +getPackageMetadataByFingerprint(fingerprint: String): PackageMetadata  // exact version, pure lookup
+  +getPackageMetadataVersions(nsURI: String): EList<PackageMetadata>      // ALL versions for the nsURI, oldest→newest
 
   // Class lookup
   +getClassMetadata(eClass: EClass): ClassMetadata

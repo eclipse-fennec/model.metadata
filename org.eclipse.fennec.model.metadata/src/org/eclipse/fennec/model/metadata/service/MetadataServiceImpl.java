@@ -220,6 +220,19 @@ public class MetadataServiceImpl implements MetadataWhiteboard {
     }
 
     @Override
+    public EList<PackageMetadata> getPackageMetadataVersions(String nsURI) {
+        if (nsURI == null) {
+            return new BasicEList<>();
+        }
+        List<PackageMetadata> versions = packagesByNsURI.get(nsURI);
+        // Defensive snapshot in registration order (oldest first, newest last — the tail is
+        // exactly what getPackageMetadata(String) serves as its best-effort newest). Empty
+        // when the nsURI is unknown. Exposes the full candidate set; selection stays with
+        // the caller.
+        return versions != null ? new BasicEList<>(versions) : new BasicEList<>();
+    }
+
+    @Override
     public ClassMetadata getClassMetadata(EClass eClass) {
         if (eClass == null) {
             return null;

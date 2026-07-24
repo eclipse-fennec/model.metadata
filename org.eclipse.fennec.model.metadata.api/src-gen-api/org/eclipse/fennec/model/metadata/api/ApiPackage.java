@@ -726,13 +726,22 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	int METADATA_SERVICE___GET_REGISTRY = 22;
 
 	/**
+	 * The operation id for the '<em>Get Package Metadata Versions</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_SERVICE___GET_PACKAGE_METADATA_VERSIONS__STRING = 23;
+
+	/**
 	 * The number of operations of the '<em>Metadata Service</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_SERVICE_OPERATION_COUNT = 23;
+	int METADATA_SERVICE_OPERATION_COUNT = 24;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.fennec.model.metadata.api.MetadataHandler <em>Metadata Handler</em>}' class.
@@ -1014,6 +1023,15 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	 * @ordered
 	 */
 	int METADATA_WHITEBOARD___GET_REGISTRY = METADATA_SERVICE___GET_REGISTRY;
+
+	/**
+	 * The operation id for the '<em>Get Package Metadata Versions</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_WHITEBOARD___GET_PACKAGE_METADATA_VERSIONS__STRING = METADATA_SERVICE___GET_PACKAGE_METADATA_VERSIONS__STRING;
 
 	/**
 	 * The operation id for the '<em>Register Package</em>' operation.
@@ -1695,6 +1713,16 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 	EOperation getMetadataService__GetRegistry();
 
 	/**
+	 * Returns the meta object for the '{@link org.eclipse.fennec.model.metadata.api.MetadataService#getPackageMetadataVersions(java.lang.String) <em>Get Package Metadata Versions</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Get Package Metadata Versions</em>' operation.
+	 * @see org.eclipse.fennec.model.metadata.api.MetadataService#getPackageMetadataVersions(java.lang.String)
+	 * @generated
+	 */
+	EOperation getMetadataService__GetPackageMetadataVersions__String();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.fennec.model.metadata.api.MetadataHandler <em>Metadata Handler</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2356,6 +2384,14 @@ public interface ApiPackage extends org.eclipse.emf.ecore.EPackage {
 		 * @generated
 		 */
 		EOperation METADATA_SERVICE___GET_REGISTRY = eINSTANCE.getMetadataService__GetRegistry();
+
+		/**
+		 * The meta object literal for the '<em><b>Get Package Metadata Versions</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation METADATA_SERVICE___GET_PACKAGE_METADATA_VERSIONS__STRING = eINSTANCE.getMetadataService__GetPackageMetadataVersions__String();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.fennec.model.metadata.api.MetadataHandler <em>Metadata Handler</em>}' class.

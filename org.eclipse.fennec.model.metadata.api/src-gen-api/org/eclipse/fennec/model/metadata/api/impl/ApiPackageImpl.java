@@ -625,6 +625,16 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 	 * @generated
 	 */
 	@Override
+	public EOperation getMetadataService__GetPackageMetadataVersions__String() {
+		return metadataServiceEClass.getEOperations().get(23);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getMetadataHandler() {
 		return metadataHandlerEClass;
 	}
@@ -957,6 +967,7 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_CLASS_PROFILE__ECLASS_STRING);
 		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_CLASS_PROFILE_BY_URI__STRING_STRING);
 		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_REGISTRY);
+		createEOperation(metadataServiceEClass, METADATA_SERVICE___GET_PACKAGE_METADATA_VERSIONS__STRING);
 
 		metadataHandlerEClass = createEClass(METADATA_HANDLER);
 		createEOperation(metadataHandlerEClass, METADATA_HANDLER___ON_PACKAGE_REGISTERED__PACKAGEMETADATA);
@@ -1177,6 +1188,9 @@ public class ApiPackageImpl extends EPackageImpl implements ApiPackage {
 		addEParameter(op, ecorePackage.getEString(), "typeId", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEOperation(getMetadataService__GetRegistry(), theMetadataPackage.getMetadataRegistry(), "getRegistry", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getMetadataService__GetPackageMetadataVersions__String(), theMetadataPackage.getPackageMetadata(), "getPackageMetadataVersions", 0, -1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "nsURI", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(metadataHandlerEClass, MetadataHandler.class, "MetadataHandler", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
