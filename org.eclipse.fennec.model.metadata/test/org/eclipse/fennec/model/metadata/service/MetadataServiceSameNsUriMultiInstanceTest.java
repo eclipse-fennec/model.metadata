@@ -24,7 +24,11 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -317,5 +321,93 @@ class MetadataServiceSameNsUriMultiInstanceTest {
 
         assertEquals(1, service.getPackageMetadataVersions(NS_URI).size(),
                 "the getter must return a defensive copy, not the live backing list");
+    }
+
+    // ---- divergence that is visible only in generics (issue #17) -------------------
+
+    /**
+     * {@code class Box<T> { T value }  class Person { Box<argument> box }} — two variants
+     * differ <em>solely</em> in the type argument. Both references have {@code eType ==
+     * Box}, so a canonical form blind to {@link EGenericType} hashes them identically and
+     * the dedup logic then discards the second version.
+     */
+    private static EPackage personHoldingBoxOf(EClassifier argument) {
+        EPackage p = EcoreFactory.eINSTANCE.createEPackage();
+        p.setName("person");
+        p.setNsPrefix("person");
+        p.setNsURI(NS_URI);
+
+        EClass box = EcoreFactory.eINSTANCE.createEClass();
+        box.setName("Box");
+        p.getEClassifiers().add(box);
+        ETypeParameter typeParameter = EcoreFactory.eINSTANCE.createETypeParameter();
+        typeParameter.setName("T");
+        box.getETypeParameters().add(typeParameter);
+        EAttribute value = EcoreFactory.eINSTANCE.createEAttribute();
+        value.setName("value");
+        EGenericType valueType = EcoreFactory.eINSTANCE.createEGenericType();
+        valueType.setETypeParameter(typeParameter);
+        value.setEGenericType(valueType);
+        box.getEStructuralFeatures().add(value);
+
+        EClass person = EcoreFactory.eINSTANCE.createEClass();
+        person.setName("Person");
+        p.getEClassifiers().add(person);
+        EGenericType boxOfArgument = EcoreFactory.eINSTANCE.createEGenericType();
+        boxOfArgument.setEClassifier(box);
+        EGenericType typeArgument = EcoreFactory.eINSTANCE.createEGenericType();
+        typeArgument.setEClassifier(argument);
+        boxOfArgument.getETypeArguments().add(typeArgument);
+        EReference boxRef = EcoreFactory.eINSTANCE.createEReference();
+        boxRef.setName("box");
+        boxRef.setContainment(true);
+        boxRef.setEGenericType(boxOfArgument);
+        person.getEStructuralFeatures().add(boxRef);
+
+        return p;
+    }
+
+    @Test
+    void versionsDivergingOnlyInTypeArgumentsCoexist() {
+        EPackage stringBoxed = personHoldingBoxOf(EcorePackage.Literals.ESTRING);
+        EPackage intBoxed = personHoldingBoxOf(EcorePackage.Literals.EINT);
+
+        PackageMetadata stringMeta = service.registerPackage(stringBoxed);
+        PackageMetadata intMeta = service.registerPackage(intBoxed);
+
+        assertNotEquals(stringMeta.getModelFingerprint(), intMeta.getModelFingerprint(),
+                "Box<EString> and Box<EInt> are different model versions");
+        assertNotSame(stringMeta, intMeta,
+                "the second version must not be discarded onto the first entry");
+        assertEquals(2, service.getPackageMetadataVersions(NS_URI).size(),
+                "both generics variants must be enumerated as separate versions");
+    }
+
+    @Test
+    void eachGenericsVariantResolvesItsOwnMetadataByInstance() {
+        EPackage stringBoxed = personHoldingBoxOf(EcorePackage.Literals.ESTRING);
+        EPackage intBoxed = personHoldingBoxOf(EcorePackage.Literals.EINT);
+        service.registerPackage(stringBoxed);
+        service.registerPackage(intBoxed);
+
+        // The invariant registerPackage documents as "never": an instance must never be
+        // served another version's metadata.
+        assertSame(stringBoxed, service.getPackageMetadata(stringBoxed).getEPackage());
+        assertSame(intBoxed, service.getPackageMetadata(intBoxed).getEPackage());
+    }
+
+    @Test
+    void unregisterOneGenericsVariantKeepsTheOther() {
+        EPackage stringBoxed = personHoldingBoxOf(EcorePackage.Literals.ESTRING);
+        EPackage intBoxed = personHoldingBoxOf(EcorePackage.Literals.EINT);
+        service.registerPackage(stringBoxed);
+        service.registerPackage(intBoxed);
+
+        service.unregisterPackage(intBoxed);
+
+        PackageMetadata survivor = service.getPackageMetadata(NS_URI);
+        assertNotNull(survivor);
+        assertSame(stringBoxed, survivor.getEPackage(),
+                "unregistering one generics variant must not remove the other");
     }
 }

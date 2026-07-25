@@ -13,8 +13,11 @@
 package org.eclipse.fennec.model.metadata.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.emf.ecore.EAnnotation;
@@ -267,5 +270,71 @@ class DefaultFingerprintServiceTest {
                 "null inputs array must behave like no inputs");
         // a null token among inputs must be ignored, not throw
         assertEquals(service.fingerprint(pkg, "a=1"), service.fingerprint(pkg, "a=1", null));
+    }
+
+    // ---- scheme seam (issue #17, §2) -----------------------------------------
+
+    @Test
+    void currentSchemeIsFp1AndTagsEveryValue() {
+        assertEquals("fp1", service.currentScheme());
+        assertTrue(service.fingerprint(base("http://test/1.0")).startsWith(service.currentScheme() + ":"),
+                "the value must carry the tag of the scheme that produced it");
+    }
+
+    @Test
+    void supportedSchemesContainsTheCurrentOne() {
+        assertTrue(service.supportedSchemes().contains(service.currentScheme()),
+                "the current scheme must be computable");
+        assertFalse(service.supportedSchemes().isEmpty(), "there is always at least one scheme");
+    }
+
+    @Test
+    void supportedSchemesIsNotModifiableByCallers() {
+        // The registry is fixed at construction; handing out a mutable view would let a
+        // caller announce a scheme that cannot be computed.
+        assertThrows(UnsupportedOperationException.class,
+                () -> service.supportedSchemes().add("fp99"));
+    }
+
+    @Test
+    void addressingTheCurrentSchemeExplicitlyMatchesTheDefault() {
+        EPackage pkg = base("http://test/1.0");
+        assertEquals(service.fingerprint(pkg),
+                service.fingerprintInScheme(service.currentScheme(), pkg),
+                "naming the current scheme must not change the value");
+        assertEquals(service.fingerprint(pkg, "oclEngine=1.2.0"),
+                service.fingerprintInScheme(service.currentScheme(), pkg, "oclEngine=1.2.0"),
+                "derivation inputs must be folded identically on both entry points");
+    }
+
+    @Test
+    void unknownSchemeIsRejected() {
+        EPackage pkg = base("http://test/1.0");
+        // A scheme that is not registered cannot be computed — say so instead of silently
+        // falling back to the current one, which would mislabel the value.
+        assertThrows(IllegalArgumentException.class, () -> service.fingerprintInScheme("fp99", pkg));
+        assertThrows(IllegalArgumentException.class, () -> service.fingerprintInScheme(null, pkg));
+    }
+
+    @Test
+    void schemeAddressedNullPackageReturnsNullNotException() {
+        assertNull(service.fingerprintInScheme("fp1", null),
+                "null handling must match the convenience method");
+        assertNull(service.fingerprintInScheme("fp1", null, "x=1"));
+    }
+
+    @Test
+    void canonicalFormIsTheDiagnosticBehindTheDigest() {
+        DefaultFingerprintService impl = new DefaultFingerprintService();
+        EPackage pkg = base("http://test/1.0");
+
+        String canonical = impl.canonicalForm("fp1", pkg);
+        assertNotNull(canonical);
+        assertTrue(canonical.contains("P|http://test/1.0"), "the canonical form starts at the package");
+        assertTrue(canonical.contains("Person"), "classifiers must be visible for diffing");
+        assertEquals(canonical, impl.canonicalForm("fp1", base("http://test/1.0")),
+                "the canonical form must be as reproducible as the digest");
+        assertNull(impl.canonicalForm("fp1", null));
+        assertThrows(IllegalArgumentException.class, () -> impl.canonicalForm("fp99", pkg));
     }
 }

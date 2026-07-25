@@ -39,8 +39,8 @@ with a scheme tag (`fp1:`). Its guarantees:
   independent of object identity, registration order, serialization order/whitespace,
   or time.
 - **Identifying** — a structural change (add/remove/rename a classifier, feature or
-  operation; change a type; change a *log-relevant* annotation) ⇒ a different value.
-  The `nsURI` alone is never the key.
+  operation; change a type; change a type parameter or type argument; change a
+  *log-relevant* annotation) ⇒ a different value. The `nsURI` alone is never the key.
 - **Canonical** — irrelevant differences do not matter: **classifier order** in the
   package is canonicalized away, and GenModel **`documentation`** annotations are
   ignored. Feature / operation / parameter order *is* significant and is kept.
@@ -50,6 +50,54 @@ String fp = fingerprintService.fingerprint(ePackage);
 // with provider-specific derivation inputs (tool/engine version, config, ...):
 String artifactFp = fingerprintService.fingerprint(ePackage, "oclEngine=1.2.0", "cfg=abc");
 ```
+
+### Canonicalization schemes
+
+A value is `<scheme>:<digest>`. The tag versions the **algorithm**, not the model — two
+values with different tags are not comparable, even for the same model. The
+canonicalization sits behind a tag-addressed seam, so several schemes stay computable side
+by side and a future bump *adds* an implementation instead of editing one whose values are
+already in circulation:
+
+```java
+fingerprintService.currentScheme();                       // "fp1" — the tag new values carry
+fingerprintService.supportedSchemes();                    // every tag that can be computed
+fingerprintService.fingerprintInScheme("fp1", ePackage);  // address one explicitly
+```
+
+A published scheme is **frozen**: each implementation owns its algorithm end to end and
+shares no canonicalization logic with another, because a helper refactored for a newer
+scheme would silently change the older one's values.
+
+Consumers that only resolve a value they read elsewhere need none of this — they pass it to
+`getPackageMetadataByFingerprint` and react to the result. An unresolvable fingerprint is
+already handled (warning plus `nsURI` fallback in LENIENT, error in STRICT), so a scheme
+bump never makes a document unreadable that was readable before; it only costs *precision*
+when several versions share an `nsURI`.
+
+Recomputing candidates in a *retained legacy* scheme on an exact-match miss is designed but
+deliberately not built: with a single scheme the path is structurally unreachable, and
+compatibility machinery is built when there is persisted data to protect. It is triggered by
+the first scheme bump that happens after such data exists.
+
+#### Generics
+
+`fp1` covers type parameters of classes and operations (with their bounds), type arguments,
+type-parameter references and wildcards. Without them, two packages differing *solely* in
+generics hashed identically — and since registration is keyed by fingerprint, the second
+model version was discarded onto the first entry and its objects would have been served the
+first version's metadata.
+
+Generic detail is emitted **only where it adds information** beyond the plain `eType`. That
+is a correctness requirement, not an optimization: EMF creates an `EGenericType` wrapper for
+every `setEType` call, so emitting those wrappers unconditionally would move the fingerprint
+of every model — including the majority that use no generics at all. Models without generics
+therefore hash exactly as they did before.
+
+Type parameter **names** are part of the form, consistent with the treatment of every other
+name, so an alpha-rename yields a new model version. That is the conservative direction on
+purpose: a false "same" serves one version's objects with another's metadata, while a false
+"different" only costs precision.
 
 ### Two fingerprints, two purposes
 
