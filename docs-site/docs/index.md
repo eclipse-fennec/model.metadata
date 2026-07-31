@@ -3,54 +3,62 @@ layout: home
 
 hero:
   name: Fennec Model Metadata
-  text: A runtime metadata & aspect layer for EMF
-  tagline: Decouple technical concerns from your Ecore domain model — a computed "shadow model" that indexes packages, classes and features and enriches them with pluggable aspects.
+  text: Closed — migrated to emf.osgi
+  tagline: This project is no longer developed. The runtime metadata & aspect layer for EMF now lives in eclipse-fennec/emf.osgi, together with fingerprinting and the derived-artifact lifecycle. These pages remain as a historical record of the pre-migration design.
   image:
     src: /fennec-logo.png
     alt: Eclipse Fennec logo
   actions:
     - theme: brand
-      text: Overview
-      link: /guides/overview
+      text: Project status
+      link: /guides/project-status
     - theme: alt
-      text: Architecture
-      link: /guides/architecture
+      text: Porting guide
+      link: https://github.com/eclipse-fennec/emf.osgi/blob/main/docs/metadata-migration-from-model-metadata.md
     - theme: alt
-      text: View on GitHub
-      link: https://github.com/eclipse-fennec/model.metadata
+      text: emf.osgi documentation
+      link: https://eclipse-fennec.github.io/emf.osgi/snapshot/
 
 features:
+  - icon: 🏁
+    title: Project closed
+    details: No further releases, features or bugfixes come from this repository. Issues and pull requests belong in eclipse-fennec/emf.osgi.
+    link: /guides/project-status
+    linkText: Read the closing summary
+  - icon: 🧭
+    title: Porting a consumer
+    details: Bundle, package and nsURI mapping plus the breaks a rename cannot cover — Optional returns, AspectEntry composition instead of aspect inheritance, MetadataHandler instead of AspectProvider.
+    link: https://github.com/eclipse-fennec/emf.osgi/blob/main/docs/metadata-migration-from-model-metadata.md
+    linkText: Open the porting guide
   - icon: 🗂️
-    title: Shadow metadata model
-    details: A dedicated EMF model (metadata.ecore) wraps every registered EPackage with PackageMetadata, ClassMetadata and FeatureMetadata — computed once at startup, type-safe, and persistable.
-    link: /guides/architecture
-    linkText: Read the architecture
-  - icon: 🧩
-    title: Pluggable aspects
-    details: Attach technical concerns — codecs, ORM mapping, historization, units — as aspects contributed by AspectProviders, without polluting the domain model or parsing EAnnotations at runtime.
-  - icon: 🔌
-    title: External models welcome
-    details: Enrich third-party Ecore models you cannot modify. Metadata is attached externally instead of requiring physical EAnnotations on the source model.
-  - icon: ⚡
-    title: Built for performance
-    details: Pre-computed metadata replaces slow EAnnotation iteration and string parsing on hot paths like serialization and persistence.
+    title: Metadata service today
+    details: Wiring, whiteboard, index and the fingerprint-keyed multi-version registry are documented in the new home.
+    link: https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/metadata-service
+    linkText: Metadata Service guide
+  - icon: 🔑
+    title: Model fingerprints
+    details: The fp1 canonical form carried over unchanged; the service property is now emf.fingerprint.
+    link: https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/model-fingerprints
+    linkText: Model Fingerprints guide
 ---
 
-## About Fennec Model Metadata
+## This project has been closed
 
-Fennec Model Metadata (`org.eclipse.fennec.model.metadata`) is a centralized
-runtime metadata registry for EMF-based frameworks. It decouples technical
-concerns — serialization/codecs, ORM mapping, historization, units of
-measurement — from the core [Ecore](https://eclipse.dev/modeling/emf/) domain
-model.
+**Fennec Model Metadata (`org.eclipse.fennec.model.metadata`) is archived.** Its content — the
+metadata mirror tree, the multi-valued index, the fingerprint mechanism and the artifact store —
+has been migrated to **[eclipse-fennec/emf.osgi](https://github.com/eclipse-fennec/emf.osgi)** and
+is maintained there. Nothing further is released from this repository.
 
-Instead of relying on slow runtime parsing of `EAnnotation`s or polluting the
-domain model with technical attributes, it establishes a dedicated **shadow
-model** (the metadata layer) that is computed once at startup. Because that layer
-is itself an EMF model (`metadata.ecore`), it gives you type-safe access to
-configuration, serialization/persistence of pre-computed metadata, and extension
-via EMF inheritance (codec aspects, ORM aspects, and more).
+The mechanism turned out to be EMF/OSGi *infrastructure* rather than codec glue: the same
+fingerprinting, per-version resolution and whiteboard lifecycle are needed by the codec,
+persistence, the sensiNact mapping and the OCL delegate cache — and the integration points
+(`EMFNamespaces` service properties, per-version `ResourceSet` resolution, registry components and
+extender) all live in `emf.osgi`. During the move the codec vocabulary returned to the codec repo,
+and aspect attachment was re-cut from inheritance to composition (`AspectEntry`).
 
-See the **[Architecture](/guides/architecture)** guide for the full design — the
-metadata registry, the feature-aspect pattern, and the `AspectProvider` extension
-mechanism.
+- **Moving a consumer?** → [Porting from `emf.model.metadata` to `emf.osgi`](https://github.com/eclipse-fennec/emf.osgi/blob/main/docs/metadata-migration-from-model-metadata.md)
+- **Closing summary and mapping table** → [Project status](/guides/project-status)
+- **Why the move, and how it was cut** → [Migration concept](https://github.com/eclipse-fennec/model.metadata/blob/main/docs/migration-to-emf-osgi.md)
+
+The remaining pages in the user manual describe the **pre-migration** design and API. They are kept
+for reference and are not a guide to the current `emf.osgi` implementation.

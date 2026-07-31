@@ -1,15 +1,23 @@
 # Migration concept: model.metadata → emf.osgi
 
-> **Status:** working document — migration plan, agreed in the architecture discussion of
-> 2026-07-27. Builds on the analysis chain: [big picture](big-picture-atlas-metadata-codec.md),
+> [!IMPORTANT]
+> **Status: done — the migration is complete and this project is closed.** The plan below was
+> agreed in the architecture discussion of 2026-07-27 and executed; it is kept unchanged as the
+> permanent record of *why* the move was made and how it was cut. The open decisions of §9 were
+> closed during execution (D1: fingerprint impl in the core impl bundle; D2: `emf.fingerprint`;
+> D3: `EObject` containment; D4: operation-level entries kept).
+>
+> **Where things actually landed** — including the few places the result differs from this concept
+> (e.g. the generated model package is `org.eclipse.fennec.emf.osgi.model.metadata`) — is documented
+> on the target side:
+> [Porting from `emf.model.metadata` to `emf.osgi`](https://github.com/eclipse-fennec/emf.osgi/blob/main/docs/metadata-migration-from-model-metadata.md).
+> Use that document to port a consumer; use this one to understand the design intent. See also
+> [Project status](project-status.md).
+>
+> Builds on the analysis chain: [big picture](big-picture-atlas-metadata-codec.md),
 > [mediator & fingerprinting](mediator-and-fingerprinting.md), the unified-persistence concept
 > (`emf.persistence-jpa/docs/unified-persistence/concept.md`), and the emf.osgi
 > multi-runtime concept (`emf.osgi/multi-runtime-concept.md`).
->
-> **Open points are tracked on the target side:** `emf.osgi/docs/metadata-migration.md` reviews
-> this plan against the verified state of emf.osgi and carries the decisions still to be made
-> (M1–M12, including D1–D4 of §9 under new IDs). That document is temporary and is deleted when
-> the migration finishes; the concept here is the permanent record.
 
 ## 1. What moves, and why
 

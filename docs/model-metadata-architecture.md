@@ -1,5 +1,16 @@
 # Architecture Specification: EMF Model Metadata Service
 
+> [!CAUTION]
+> **Historical document — this project is closed.** This specification describes the
+> **pre-migration** architecture: modeled service contracts (`metadata-api.ecore`), aspect
+> attachment by inheritance and the codec vocabulary inside `metadata.ecore`. None of that survived
+> the move to [`eclipse-fennec/emf.osgi`](https://github.com/eclipse-fennec/emf.osgi) in this form.
+> For current design and API use the
+> [Metadata Service guide](https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/metadata-service);
+> for the differences, the
+> [porting guide](https://github.com/eclipse-fennec/emf.osgi/blob/main/docs/metadata-migration-from-model-metadata.md).
+> See [Project status](project-status.md).
+
 ## 1. Executive Summary
 
 This document outlines the architecture for a **Model Metadata Service**, a centralized runtime metadata registry for an EMF-based framework.

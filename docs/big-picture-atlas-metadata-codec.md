@@ -1,5 +1,13 @@
 # Big Picture: Model Atlas → Metadata Service → Codec
 
+> [!CAUTION]
+> **Historical document — this project is closed.** The chain described here is now realized in
+> [`eclipse-fennec/emf.osgi`](https://github.com/eclipse-fennec/emf.osgi): the fingerprint is
+> emitted as the `emf.fingerprint` service property (not `fennec.model.fingerprint`), and the
+> metadata registry is fingerprint-keyed. This repository is no longer the glue between Atlas and
+> codec. See [Project status](project-status.md) and the
+> [Metadata Service guide](https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/metadata-service).
+
 > The end-to-end story of how a model version travels from the Model Atlas through
 > the Metadata Service to a codec run — why the current nsURI-keyed chain breaks as
 > soon as two versions of the same model are live, and what each party has to change.

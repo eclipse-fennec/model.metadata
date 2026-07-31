@@ -1,5 +1,12 @@
 # Model Metadata Service — Purpose & Application Scenarios
 
+> [!CAUTION]
+> **Historical document — this project is closed.** The metadata service now lives in
+> [`eclipse-fennec/emf.osgi`](https://github.com/eclipse-fennec/emf.osgi); this page describes the
+> pre-migration design and is no longer updated. See [Project status](project-status.md), and
+> [Porting from `emf.model.metadata` to `emf.osgi`](https://github.com/eclipse-fennec/emf.osgi/blob/main/docs/metadata-migration-from-model-metadata.md)
+> to move a consumer.
+
 > A conceptual overview of *why* the Model Metadata Service exists and *what* it is
 > used for. For the detailed design (EMF classes, aspect pattern, registration
 > lifecycle, APIs) see the [Architecture Specification](model-metadata-architecture.md).

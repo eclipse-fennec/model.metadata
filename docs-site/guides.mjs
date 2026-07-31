@@ -10,6 +10,7 @@
 // Internal dev docs (e.g. extraction-requirements.md) are deliberately NOT listed
 // here and therefore stay GitHub-only, matching the other Fennec projects.
 export const GUIDES = [
+  { file: 'project-status.md', slug: 'project-status', title: '⚠ Project closed → emf.osgi' },
   { file: 'model-metadata-purpose.md', slug: 'overview', title: 'Overview' },
   { file: 'mediator-and-fingerprinting.md', slug: 'mediator', title: 'Mediator & Fingerprinting' },
   { file: 'model-metadata-architecture.md', slug: 'architecture', title: 'Architecture' },

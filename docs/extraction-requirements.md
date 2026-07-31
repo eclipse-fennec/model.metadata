@@ -1,5 +1,12 @@
 # model.metadata – Extraktions-Requirements
 
+> [!CAUTION]
+> **Historisches Dokument – dieses Projekt ist geschlossen.** Es beschreibt die ursprüngliche
+> Extraktion aus `emf.codec` in dieses Repository. Inzwischen ist der Metadata-Service nach
+> [`eclipse-fennec/emf.osgi`](https://github.com/eclipse-fennec/emf.osgi) migriert; dieses Repo wird
+> nicht weiterentwickelt. Siehe [Projektstatus](project-status.md) und die
+> [Portierungsanleitung](https://github.com/eclipse-fennec/emf.osgi/blob/main/docs/metadata-migration-from-model-metadata.md).
+
 | Feld        | Wert                                                                                  |
 |-------------|---------------------------------------------------------------------------------------|
 | Status      | Draft v0.2 – Kern-Extraktion durchgeführt (Build + Tests grün), s. §0                 |

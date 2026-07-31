@@ -2,9 +2,9 @@ import { defineConfig } from 'vitepress'
 import { GUIDES, EXAMPLES } from '../../guides.mjs'
 
 // Per-project docs are served under a versioned sub-path, matching the org
-// convention (https://eclipse-fennec.github.io/<repo>/<version>/). The snapshot
-// branch publishes to /model.metadata/snapshot/; tagged releases / `latest` get
-// added once the first release lands.
+// convention (https://eclipse-fennec.github.io/<repo>/<version>/). This project is
+// closed (migrated to emf.osgi): the snapshot deploy at /model.metadata/snapshot/
+// is the FINAL publication — no release version will ever be added.
 const version = process.env.DOCS_BRANCH || 'snapshot'
 const base = `/model.metadata/${version}/`
 
@@ -13,9 +13,12 @@ const base = `/model.metadata/${version}/`
 // root-absolute (`/…`) link, which would otherwise double the path.
 const SITE = 'https://eclipse-fennec.github.io/model.metadata'
 
-// Version selector. Only `snapshot` is deployed today; keep as data so adding
-// `latest` and tagged versions later is a one-liner.
-const versions = [{ text: 'snapshot', link: `${SITE}/snapshot/` }]
+// Version selector. `snapshot` is the only — and now final — deployed version;
+// instead of further versions of this project, it points at its successor.
+const versions = [
+  { text: 'snapshot (final)', link: `${SITE}/snapshot/` },
+  { text: 'continued in emf.osgi ↗', link: 'https://eclipse-fennec.github.io/emf.osgi/snapshot/' },
+]
 
 const guideItems = GUIDES.map((g) => ({ text: g.title, link: `/guides/${g.slug}` }))
 const exampleItems = EXAMPLES.map((g) => ({ text: g.title, link: `/examples/${g.slug}` }))
@@ -25,7 +28,7 @@ const nav = [
   { text: 'Home', link: '/' },
   { text: 'User Manual', items: guideItems },
   ...(exampleItems.length ? [{ text: 'Examples', items: exampleItems }] : []),
-  { text: `version: ${version}`, items: versions },
+  { text: `version: ${version} (final)`, items: versions },
 ]
 
 const sidebar = {
@@ -34,9 +37,9 @@ const sidebar = {
 }
 
 export default defineConfig({
-  title: 'Fennec Model Metadata',
+  title: 'Fennec Model Metadata (archived)',
   description:
-    'A metadata and aspect model for EMF — capture, index and enrich Ecore packages, classes and features with pluggable aspect providers.',
+    'Archived project — the metadata and aspect model for EMF moved to eclipse-fennec/emf.osgi. These pages document the pre-migration design.',
   lang: 'en-US',
   base,
   cleanUrls: true,
@@ -52,20 +55,20 @@ export default defineConfig({
     ['link', { rel: 'icon', type: 'image/png', href: `${base}fennec-logo.png` }],
     ['meta', { name: 'theme-color', content: '#c0631c' }],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:title', content: 'Fennec Model Metadata' }],
+    ['meta', { property: 'og:title', content: 'Fennec Model Metadata (archived)' }],
     [
       'meta',
       {
         property: 'og:description',
         content:
-          'A metadata and aspect model for EMF — index and enrich Ecore models with pluggable aspects.',
+          'Archived — the metadata and aspect model for EMF is now developed in eclipse-fennec/emf.osgi.',
       },
     ],
   ],
 
   themeConfig: {
     logo: '/fennec-logo.png',
-    siteTitle: 'Fennec Model Metadata',
+    siteTitle: 'Fennec Model Metadata (archived)',
 
     nav,
     sidebar,
@@ -76,14 +79,16 @@ export default defineConfig({
 
     search: { provider: 'local' },
 
+    // No edit link: the repository is closed and becomes read-only/archived, so
+    // "edit this page" would lead nowhere. Point at the successor instead.
     editLink: {
-      pattern: 'https://github.com/eclipse-fennec/model.metadata/edit/main/docs/:path',
-      text: 'Edit this page on GitHub',
+      pattern: 'https://github.com/eclipse-fennec/emf.osgi',
+      text: 'This project is archived — continued in emf.osgi',
     },
 
     footer: {
       message:
-        'Released under the EPL-2.0 License. Eclipse Fennec is part of the Eclipse Foundation.',
+        'Archived project — development continues in <a href="https://github.com/eclipse-fennec/emf.osgi">eclipse-fennec/emf.osgi</a>. Released under the EPL-2.0 License. Eclipse Fennec is part of the Eclipse Foundation.',
       copyright: 'Copyright © Eclipse Foundation and contributors',
     },
   },

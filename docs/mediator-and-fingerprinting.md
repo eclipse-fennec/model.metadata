@@ -1,5 +1,13 @@
 # Mediator, Fingerprinting & the Derived-Artifact Lifecycle
 
+> [!CAUTION]
+> **Historical document — this project is closed.** Fingerprinting and the derived-artifact
+> lifecycle now live in [`eclipse-fennec/emf.osgi`](https://github.com/eclipse-fennec/emf.osgi):
+> see the [Model Fingerprints guide](https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/model-fingerprints)
+> and the [Metadata Service guide](https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/metadata-service).
+> The fp1 canonical form carried over unchanged; the `AspectProvider` SPI described below did not —
+> it is now `MetadataHandler`. See [Project status](project-status.md).
+
 > How the Model Metadata Service turns an incoming `EPackage` into fingerprint-keyed,
 > reusable derived artifacts — and how an `AspectProvider` plugs into that. For the
 > conceptual "why" see the [Overview](model-metadata-purpose.md); for the full data
