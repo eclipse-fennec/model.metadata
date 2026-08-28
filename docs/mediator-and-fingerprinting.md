@@ -6,11 +6,11 @@
 > see the [Model Fingerprints guide](https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/model-fingerprints)
 > and the [Metadata Service guide](https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/metadata-service).
 > The fp1 canonical form carried over unchanged; the `AspectProvider` SPI described below did not —
-> it is now `MetadataHandler`. See [Project status](project-status.md).
+> it is now `MetadataHandler`. See Project status.
 
 > How the Model Metadata Service turns an incoming `EPackage` into fingerprint-keyed,
 > reusable derived artifacts — and how an `AspectProvider` plugs into that. For the
-> conceptual "why" see the [Overview](model-metadata-purpose.md); for the full data
+> conceptual "why" see the Overview; for the full data
 > model see the [Architecture](model-metadata-architecture.md).
 
 ## The idea in one paragraph
@@ -137,7 +137,7 @@ EPackage appears  ──▶  registerPackage(ePackage, serviceProperties)
 
 - **Unregister** is per-node and local: the in-memory metadata is dropped, but the
   durable store is **not** touched (liveness is per node; a stored artifact may still be
-  used elsewhere — see [Overview](model-metadata-purpose.md)).
+  used elsewhere — see Overview).
 - **Re-register the same content** ⇒ same `modelFingerprint` ⇒ the stored artifact is
   **reused** instead of rebuilt.
 - **Re-register modified content** ⇒ different fingerprint ⇒ rebuilt and stored under
