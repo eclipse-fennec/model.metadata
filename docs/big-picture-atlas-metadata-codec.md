@@ -5,7 +5,7 @@
 > [`eclipse-fennec/emf.osgi`](https://github.com/eclipse-fennec/emf.osgi): the fingerprint is
 > emitted as the `emf.fingerprint` service property (not `fennec.model.fingerprint`), and the
 > metadata registry is fingerprint-keyed. This repository is no longer the glue between Atlas and
-> codec. See [Project status](project-status.md) and the
+> codec. See Project status and the
 > [Metadata Service guide](https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/metadata-service).
 
 > The end-to-end story of how a model version travels from the Model Atlas through
@@ -185,7 +185,7 @@ working for the single-version case throughout (an explicit WP6 acceptance crite
 
 ## Reading path
 
-1. [Overview / purpose](model-metadata-purpose.md) — why the Metadata Service exists.
+1. Overview / purpose — why the Metadata Service exists.
 2. [Architecture](model-metadata-architecture.md) — the metadata/aspect/profile data model.
 3. [Mediator & fingerprinting](mediator-and-fingerprinting.md) — fingerprint function,
    two-fingerprint scheme, resolve-or-build, `ArtifactStore`.

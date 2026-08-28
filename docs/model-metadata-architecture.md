@@ -9,7 +9,7 @@
 > [Metadata Service guide](https://eclipse-fennec.github.io/emf.osgi/snapshot/guides/metadata-service);
 > for the differences, the
 > [porting guide](https://github.com/eclipse-fennec/emf.osgi/blob/main/docs/metadata-migration-from-model-metadata.md).
-> See [Project status](project-status.md).
+> See Project status.
 
 ## 1. Executive Summary
 
