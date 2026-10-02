@@ -31,6 +31,14 @@ import org.eclipse.fennec.model.metadata.api.ApiPackage;
  */
 public class ApiEPackageConfigurator implements EPackageConfigurator {
 	
+	/**
+	 * The fingerprint of this model version, computed from the <code>.ecore</code> at build
+	 * time. It identifies the model content, not the artifact - see the <code>emf.fingerprint</code>
+	 * service property.
+	 * @generated
+	 */
+	public static final String FINGERPRINT = "fp1:52641d4997293fc2a438a759f463189c99bf2c4a0cf369ae7b9cc3763b9e6a1f";
+
 	private ApiPackage ePackage;
 
 	protected ApiEPackageConfigurator(ApiPackage ePackage){
@@ -68,6 +76,7 @@ public class ApiEPackageConfigurator implements EPackageConfigurator {
 		properties.put(EMFNamespaces.EMF_MODEL_REGISTRATION, EMFNamespaces.MODEL_REGISTRATION_PROVIDED);
 		properties.put(EMFNamespaces.EMF_MODEL_FILE_EXT, "api");
 		properties.put(EMFNamespaces.EMF_MODEL_VERSION, "1.0");
+		properties.put(EMFNamespaces.EMF_MODEL_FINGERPRINT, FINGERPRINT);
 		return properties;
 	}
 }

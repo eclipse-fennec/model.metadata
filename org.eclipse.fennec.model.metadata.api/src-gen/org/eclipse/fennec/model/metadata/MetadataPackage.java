@@ -40,7 +40,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-@EPackage(uri = MetadataPackage.eNS_URI, genModel = "/model/metadata.genmodel", genModelSourceLocations = {"model/metadata.genmodel","org.eclipse.fennec.model.metadata.api/model/metadata.genmodel"}, ecore = "/model/metadata.ecore", ecoreSourceLocations = "/model/metadata.ecore")
+@EPackage(uri = MetadataPackage.eNS_URI, fingerprint = "fp1:d213765203296399f7ac89d06d367538fb47e0e8a430315d503b3158cc958954", genModel = "/model/metadata.genmodel", genModelSourceLocations = {"model/metadata.genmodel","org.eclipse.fennec.model.metadata.api/model/metadata.genmodel"}, ecore = "/model/metadata.ecore", ecoreSourceLocations = "/model/metadata.ecore")
 public interface MetadataPackage extends org.eclipse.emf.ecore.EPackage {
 	/**
 	 * The package name.
