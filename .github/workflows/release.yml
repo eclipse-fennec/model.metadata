@@ -19,15 +19,15 @@ concurrency:
 
 jobs:
   verify:
-    uses: eclipse-fennec/.github/.github/workflows/reusable-verify.yml@227b1dfa5f323fdd6d857d0a61fbaaf6e7288716 # v1.0.0
+    uses: eclipse-fennec/.github/.github/workflows/reusable-verify.yml@5b25efac2c99c0f88252d1a45302b8a1ae5876ce # v1.4.0
 
   release:
     needs: verify
-    uses: eclipse-fennec/.github/.github/workflows/reusable-release.yml@227b1dfa5f323fdd6d857d0a61fbaaf6e7288716 # v1.0.0
+    uses: eclipse-fennec/.github/.github/workflows/reusable-release.yml@5b25efac2c99c0f88252d1a45302b8a1ae5876ce # v1.4.0
     with:
       do-release: true
     secrets: inherit
 
   docs:
     needs: release
-    uses: eclipse-fennec/.github/.github/workflows/reusable-docs.yml@227b1dfa5f323fdd6d857d0a61fbaaf6e7288716 # v1.0.0
+    uses: eclipse-fennec/.github/.github/workflows/reusable-docs.yml@5b25efac2c99c0f88252d1a45302b8a1ae5876ce # v1.4.0
